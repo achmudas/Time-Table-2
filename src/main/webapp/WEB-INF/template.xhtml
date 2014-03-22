@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link href="${facesContext.externalContext.requestContextPath}/resources/css/default.css" rel="stylesheet" type="text/css" />
+        <link href="${facesContext.externalContext.requestContextPath}/resources/css/cssLayout.css" rel="stylesheet" type="text/css" />
+        <title>#{mainMessages.title}</title>
+    </h:head>
+
+    <h:body>
+
+
+        <div id="top" class="top">
+            <ui:insert name="top">
+                <h:form>
+                    <h1><h:commandLink value="#{mainMessages.title}" action="/index"/></h1>
+                </h:form>
+            </ui:insert>
+        </div>
+        <div>
+            <div id="left">
+                <ui:insert name="left">
+                    <h:form>
+                        <p:tieredMenu style="width: 180px">
+                            <p:menuitem value="#{mainMessages.uploadFile}" outcome="/upload/upload"/> 
+                        </p:tieredMenu>
+                        <p:tieredMenu style="width: 180px">
+                              <p:menuitem value="#{mainMessages.arrangeGroups}" />
+                        </p:tieredMenu>
+                        <p:tieredMenu style="width: 180px">
+                              <p:submenu label="#{mainMessages.showTimetable}" >
+                                   <p:menuitem value="#{mainMessages.studentsTm}" /> 
+                                   <p:menuitem value="#{mainMessages.teachersTm}" /> 
+                                   <p:menuitem value="#{mainMessages.groupsTm}" /> 
+                                   <p:menuitem value="#{mainMessages.roomsTm}" /> 
+                              </p:submenu>
+                        </p:tieredMenu>
+                        <p:tieredMenu style="width: 180px">
+                              <p:submenu label="#{mainMessages.showOpTimetable}" >
+                                   <p:menuitem value="#{mainMessages.studentsTm}" /> 
+                                   <p:menuitem value="#{mainMessages.teachersTm}" /> 
+                                   <p:menuitem value="#{mainMessages.groupsTm}" /> 
+                                   <p:menuitem value="#{mainMessages.roomsTm}" /> 
+                              </p:submenu>
+                        </p:tieredMenu>
+                    </h:form>
+                </ui:insert>
+            </div>
+            <div id="content" class="left_content">
+                <ui:insert name="content">Content</ui:insert>
+            </div>
+        </div>
+        <div id="bottom" class="bottom">
+            <ui:insert name="footer">
+                <h:form>
+                    <h:outputLabel value="#{mainMessages.contacts}" />
+                </h:form>
+            </ui:insert>
+        </div>
+    </h:body>
+
+</html>
