@@ -19,10 +19,11 @@ import org.primefaces.event.FileUploadEvent;
 @SessionScoped
 public class FileUploadController {
     private static FacesMessage msg;
+    private static final String TARGET_FOLDER = "/Users/achmudas/Desktop/testing";
     
     public static void handleFileUpload(FileUploadEvent event) {
          try {
-            File targetFolder = new File("/Users/achmudas/Desktop/testing");
+            File targetFolder = new File(TARGET_FOLDER);
             InputStream inputStream = event.getFile().getInputstream();
             OutputStream out = new FileOutputStream(new File(targetFolder,
                     event.getFile().getFileName()));
