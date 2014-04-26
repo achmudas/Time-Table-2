@@ -1,5 +1,7 @@
 package org.kutkaitis.timetable2.domain;
 
+import java.util.List;
+
 /**
  *
  * @author achmudas
@@ -7,7 +9,7 @@ package org.kutkaitis.timetable2.domain;
 public class Teacher {
     
     private String name;
-    private Discipline teacherDiscipline;
+    private List<Discipline> teacherDisciplines;
 
     public String getName() {
         return name;
@@ -17,12 +19,12 @@ public class Teacher {
         this.name = name;
     }
 
-    public Discipline getTeacherDiscipline() {
-        return teacherDiscipline;
+    public List<Discipline> getTeacherDisciplines() {
+        return teacherDisciplines;
     }
 
-    public void setTeacherDiscipline(Discipline teacherDiscipline) {
-        this.teacherDiscipline = teacherDiscipline;
+    public void setTeacherDisciplines(List<Discipline> teacherDisciplines) {
+        this.teacherDisciplines = teacherDisciplines;
     }
     
     

@@ -1,5 +1,6 @@
 package org.kutkaitis.timetable2.domain;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,7 +10,8 @@ import java.util.Map;
 public class Student {
     
     private String name;
-    private Map<String, Group> chosenDisciplines;
+    private List<Discipline> chosenDisciplines;
+    
 
     public String getName() {
         return name;
@@ -19,11 +21,11 @@ public class Student {
         this.name = name;
     }
 
-    public Map<String, Group> getChosenDisciplines() {
+    public List<Discipline> getChosenDisciplines() {
         return chosenDisciplines;
     }
 
-    public void setChosenDisciplines(Map<String, Group> chosenDisciplines) {
+    public void setChosenDisciplines(List<Discipline> chosenDisciplines) {
         this.chosenDisciplines = chosenDisciplines;
     }
     

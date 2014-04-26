@@ -1,5 +1,7 @@
 package org.kutkaitis.timetable2.domain;
 
+import java.util.List;
+
 /**
  *
  * @author achmudas
@@ -9,7 +11,7 @@ public class Group {
     private Teacher teacher;
     private String groupName;
     private Discipline discipline;
-    private Student studet;
+    private List<Student> students;
 
     public String getGroupName() {
         return groupName;
@@ -35,14 +37,14 @@ public class Group {
         this.teacher = teacher;
     }
 
-    public Student getStudet() {
-        return studet;
+    public List<Student> getStudents() {
+        return students;
     }
 
-    public void setStudet(Student studet) {
-        this.studet = studet;
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
-    
+
     
 
 }
