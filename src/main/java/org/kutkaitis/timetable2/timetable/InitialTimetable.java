@@ -18,12 +18,17 @@ import org.kutkaitis.timetable2.mock.StudentsMockDataFiller;
  * @author achmudas
  */
 @Named
-@FlowScoped("timetable")
+@SessionScoped
 public class InitialTimetable {
 
+    
     @Inject StudentsMockDataFiller studentsMockDataFiller;
     
-    
+    List<Group> mondayTimeTable = new ArrayList<>();
+    List<Group> tuesdayTimeTable = new ArrayList<>();
+    List<Group> wednesdayTimeTable = new ArrayList<>();
+    List<Group> thursdayTimeTable = new ArrayList<>();
+    List<Group> fridayTimeTable = new ArrayList<>();
     
     public HashMap<String, Group> getAllGroups() {
         return studentsMockDataFiller.getGroups();
@@ -34,7 +39,7 @@ public class InitialTimetable {
         HashMap<String, Group> groupsI = new HashMap<>();
         Set<String> keys = allGroups.keySet();
         for (String key: keys) {
-            if (key.contains("I") && (key.length() - key.replace("I", "").length()  == 1)) {
+            if (key.contains("I") && (key.length() - key.replace("I", "").length()  == 1)) { //FIXME IV adds
                 groupsI.put(key, allGroups.get(key));
             }
         }
@@ -42,13 +47,17 @@ public class InitialTimetable {
     }
     
     public List<Group> getMondayTimeTable() {
-        List<Group> mondayTimeTable = new ArrayList<>();
         HashMap<String, Group> groupI = getIGroups();
         Set<String> groupIKeys = groupI.keySet();
         for (String key : groupIKeys) {
             mondayTimeTable.add(groupI.get(key));
         }
         return mondayTimeTable;
+    }
+    
+    
+    public void createStartingTimeTableForIIIAndIV() {
+        
     }
     
     public HashMap<String, Teacher> getTeachers() {

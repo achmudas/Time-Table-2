@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.ejb.Startup;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Named;
@@ -16,12 +18,11 @@ import org.kutkaitis.timetable2.domain.Teacher;
  *
  * @author achmudas
  */
-@Named
-@SessionScoped
+@Startup
 public class StudentsMockDataFiller {
     
-    private HashMap<String, Group> groups;
-    private HashMap<String, Teacher> teachers;
+    private HashMap<String, Group> groups = new HashMap<String, Group>();
+    private HashMap<String, Teacher> teachers = new HashMap<String, Teacher>();
 
     public HashMap<String, Group> getGroups() {
         return groups;
@@ -31,8 +32,9 @@ public class StudentsMockDataFiller {
         return teachers;
     }
     
+    // Creates mock data at the start of application
     @PostConstruct
-    private void fillMockDataForStudents() {
+    public void init() {
         Discipline mtI_II = createDiscipline("Matematika", "4");
         Discipline ltI_II = createDiscipline("Lietuviu kalba", "5");
         Discipline fzI_II = createDiscipline("Fizika", "2");
@@ -214,5 +216,10 @@ public class StudentsMockDataFiller {
 
         return studentsList;
     }
+     
+    @PreDestroy
+    public void destroy() {
+    }
+    
 
 }
