@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
 import org.kutkaitis.timetable2.domain.Discipline;
 import org.kutkaitis.timetable2.domain.Group;
 import org.kutkaitis.timetable2.domain.Student;
@@ -15,7 +16,7 @@ import org.kutkaitis.timetable2.domain.Teacher;
  *
  * @author achmudas
  */
-@ManagedBean
+@Named
 @SessionScoped
 public class StudentsMockDataFiller {
     
