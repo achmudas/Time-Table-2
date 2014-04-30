@@ -17,12 +17,9 @@
 
 package org.kutkaitis.timetable2.timetable;
 
-import com.sun.org.apache.xml.internal.utils.SerializableLocatorImpl;
 import java.io.Serializable;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.inject.Named;
 
 /**
  *

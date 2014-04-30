@@ -48,7 +48,6 @@ public class InitialTimetable {
     }
     
     public List<Group> getMondayTimeTable() {
-        System.out.println("ISKVIETE");
         return mondayTimeTable;
     }
 
