@@ -38,9 +38,9 @@ public class PropertiesForOptimizationBean implements Serializable{
     public PropertiesForOptimizationBean() {
     }
     
-    int optimizationIterations;
-    int hoursPerDay;
-    String optimizationMethod;
+    private int optimizationIterations;
+    private int hoursPerDay;
+    private String optimizationMethod;
 
     public int getOptimisationIterations() {
         return optimizationIterations;

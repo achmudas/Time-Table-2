@@ -22,14 +22,15 @@
                                      size="40" value="#{propertiesForOptimizationBean.hoursPerDay}" />
                         
                         <p:outputLabel for="optimizationMethod" value="Which optimization method should be used?" /> 
-                        <p:selectOneMenu id="optimizationMethod" value="#{propertiesForOptimizationBean.optimisationMethod}">  
+                        <p:selectOneMenu id="optimizationMethod" value="#{propertiesForOptimizationBean.optimisationMethod}" required="true">  
                             <f:selectItem itemLabel="Select Optimization Method" itemValue="" />  
                             <f:selectItem itemLabel="Monte Carlo" itemValue="MonteCarlo" />  
                         </p:selectOneMenu> 
                     </h:panelGrid>
 
+                    <!-- TODO Currently shows only teachers, need to make for groups etc, probably use facelets -->
                     <h:panelGrid columns="2" >
-                        <h:commandButton value="Save" action="saveAndStartOptimization" />
+                        <h:commandButton value="Save" action="/optimisation/optimisation" /> 
                         <h:commandButton value="Reset" type="reset" />
                     </h:panelGrid>
 
