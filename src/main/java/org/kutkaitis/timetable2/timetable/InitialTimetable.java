@@ -22,7 +22,8 @@ import org.kutkaitis.timetable2.mock.StudentsMockDataFiller;
 public class InitialTimetable {
 
     
-    @Inject StudentsMockDataFiller studentsMockDataFiller;
+    @Inject
+    StudentsMockDataFiller studentsMockDataFiller;
     
     List<Group> mondayTimeTable = new ArrayList<>();
     List<Group> tuesdayTimeTable = new ArrayList<>();
@@ -47,12 +48,28 @@ public class InitialTimetable {
     }
     
     public List<Group> getMondayTimeTable() {
-        HashMap<String, Group> groupI = getIGroups();
-        Set<String> groupIKeys = groupI.keySet();
-        for (String key : groupIKeys) {
-            mondayTimeTable.add(groupI.get(key));
-        }
+        System.out.println("ISKVIETE");
         return mondayTimeTable;
+    }
+
+    public StudentsMockDataFiller getStudentsMockDataFiller() {
+        return studentsMockDataFiller;
+    }
+
+    public List<Group> getTuesdayTimeTable() {
+        return tuesdayTimeTable;
+    }
+
+    public List<Group> getWednesdayTimeTable() {
+        return wednesdayTimeTable;
+    }
+
+    public List<Group> getThursdayTimeTable() {
+        return thursdayTimeTable;
+    }
+
+    public List<Group> getFridayTimeTable() {
+        return fridayTimeTable;
     }
     
     
