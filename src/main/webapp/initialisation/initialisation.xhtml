@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/template.xhtml">
+
+            <ui:define name="content">
+                <h2>Enter parameters for timetable optimization</h2>
+                <h:form>
+                    <h:panelGrid columns="2" cellpadding="10" >
+                        <p:outputLabel for="optimizationIterations" value="How many iterations should be performed?" />   
+                        <p:inputText id="optimizationIterations" required="true" 
+                                     size="40" value="#{propertiesForOptimizationBean.optimisationIterations}" />
+
+                        <p:outputLabel for="hoursPerDay" value="How many class hours per day should be?" /> 
+                        <p:inputText id="hoursPerDay" required="true" 
+                                     size="40" value="#{propertiesForOptimizationBean.hoursPerDay}" />
+                        
+                        <p:outputLabel for="optimizationMethod" value="Which optimization method should be used?" /> 
+                        <p:selectOneMenu id="optimizationMethod" value="#{propertiesForOptimizationBean.optimisationMethod}">  
+                            <f:selectItem itemLabel="Select Optimization Method" itemValue="" />  
+                            <f:selectItem itemLabel="Monte Carlo" itemValue="MonteCarlo" />  
+                        </p:selectOneMenu> 
+                    </h:panelGrid>
+
+                    <h:panelGrid columns="2" >
+                        <h:commandButton value="Save" action="saveAndStartOptimization" />
+                        <h:commandButton value="Reset" type="reset" />
+                    </h:panelGrid>
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -18,10 +18,8 @@ package org.kutkaitis.timetable2.timetable;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.Stateless;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.inject.Inject;
+import javax.ejb.EJB;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.kutkaitis.timetable2.mock.StudentsMockDataFiller;
 
@@ -29,20 +27,21 @@ import org.kutkaitis.timetable2.mock.StudentsMockDataFiller;
  *
  * @author MkA
  */
-@ManagedBean
-@SessionScoped
+@Named(value = "users")
+@RequestScoped
 public class Users {
 
-//    @Inject
-//    StudentsMockDataFiller studentsMockDataFiller;
+    @EJB
+    StudentsMockDataFiller studentsMockDataFiller;
+    List<String> teachersNames;
 
-    private List<String> teachersNames;
+    public Users() {
+    }
 
     public List<String> getTeachersNames() {
         teachersNames = new ArrayList<>();
         System.out.println("KVIECIA");
-//        teachersNames.addAll(studentsMockDataFiller.getTeachers().keySet());
+        teachersNames.addAll(studentsMockDataFiller.getTeachers().keySet());
         return teachersNames;
     }
-
 }
