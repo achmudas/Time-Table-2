@@ -14,13 +14,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.kutkaitis.timetable2.timetable;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.inject.Inject;
+import org.kutkaitis.timetable2.domain.Teacher;
+import org.kutkaitis.timetable2.mock.StudentsMockDataFiller;
 
 /**
  *
  * @author MkA
  */
+@ManagedBean(name = "monteCarlo")
+@SessionScoped
 public class MonteCarlo extends OptimizationAlgorithm {
-    
+
+    @Inject
+    StudentsMockDataFiller studentsMockDataFiller;
+    @Inject
+    UsersBean usersBean;
+
+    List<String> mondayTimeTable;
+
+    public List<String> getOptimizedTimeTableForTeacherMonday() {
+        mondayTimeTable = new ArrayList<>();
+        for (String teacherNames : usersBean.getTeachersNames()) {
+            Teacher teacher = studentsMockDataFiller.getTeachers().get(teacherNames);
+            mondayTimeTable.add()
+        }
+            
+        }
+        
+        return mondayTimeTable;
+    }
+
 }
