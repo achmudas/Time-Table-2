@@ -19,8 +19,10 @@ package org.kutkaitis.timetable2.timetable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
 import org.kutkaitis.timetable2.domain.Group;
@@ -40,6 +42,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
     StudentsMockDataFiller studentsMockDataFiller;
     @Inject
     UsersBean usersBean;
+    @EJB
     PropertiesForOptimizationBean properties;
     
     List<String> teachersListForOptm;
@@ -49,13 +52,12 @@ public class MonteCarlo extends OptimizationAlgorithm {
     public List<String> getOptimizedTimeTableForTeacherMonday() {
         mondayTimeTable = new ArrayList<>();
         for (String teacherName : teachersListForOptm) {
-//            System.out.println("Teacher name: " + teacherName);
+            System.out.print("Teacher name: " + teacherName);
             Teacher teacher = studentsMockDataFiller.getTeachers().get(teacherName);
             Group group = teacher.getTeachersGroups().get(0);
-//            System.out.println("Group: " + group.getGroupName());
+            System.out.print("; Group: " + group.getGroupName());
             mondayTimeTable.add(group.getGroupName());
-//            System.out.println("Hours per day: " + properties.getHoursPerDay());
-//            System.out.println("Properties: " + properties);
+            System.out.println("; Hours per day: " + properties.getHoursPerDay());
             for (int i = 1; i < properties.getHoursPerDay(); i++) {
                 mondayTimeTable.add("Empty");
             }
@@ -71,12 +73,6 @@ public class MonteCarlo extends OptimizationAlgorithm {
         Collections.shuffle(teachersListForOptm);
         return teachersListForOptm;
     }
-    
-    @Inject
-    public void setProperties(PropertiesForOptimizationBean properties) {
-        this.properties = properties;
-    }
-    
     
 
 }

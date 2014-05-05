@@ -19,6 +19,7 @@ package org.kutkaitis.timetable2.timetable;
 
 import java.io.Serializable;
 import javax.ejb.Singleton;
+import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -29,7 +30,7 @@ import javax.inject.Named;
  *
  * @author MkA
  */
-@Named
+@Stateless
 public class PropertiesForOptimizationBean implements Serializable{
 
     private int optimizationIterations;
