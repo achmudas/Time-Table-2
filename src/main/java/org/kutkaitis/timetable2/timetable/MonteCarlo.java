@@ -17,10 +17,13 @@
 package org.kutkaitis.timetable2.timetable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import javax.ejb.Singleton;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
+import org.kutkaitis.timetable2.domain.Group;
 import org.kutkaitis.timetable2.domain.Teacher;
 import org.kutkaitis.timetable2.mock.StudentsMockDataFiller;
 
@@ -30,25 +33,52 @@ import org.kutkaitis.timetable2.mock.StudentsMockDataFiller;
  */
 @ManagedBean(name = "monteCarlo")
 @SessionScoped
+@Singleton
 public class MonteCarlo extends OptimizationAlgorithm {
 
     @Inject
     StudentsMockDataFiller studentsMockDataFiller;
     @Inject
     UsersBean usersBean;
+    PropertiesForOptimizationBean properties;
+    
+    List<String> teachersListForOptm;
 
     List<String> mondayTimeTable;
 
     public List<String> getOptimizedTimeTableForTeacherMonday() {
         mondayTimeTable = new ArrayList<>();
-        for (String teacherNames : usersBean.getTeachersNames()) {
-            Teacher teacher = studentsMockDataFiller.getTeachers().get(teacherNames);
-            mondayTimeTable.add()
-        }
-            
+        for (String teacherName : teachersListForOptm) {
+//            System.out.println("Teacher name: " + teacherName);
+            Teacher teacher = studentsMockDataFiller.getTeachers().get(teacherName);
+            Group group = teacher.getTeachersGroups().get(0);
+//            System.out.println("Group: " + group.getGroupName());
+            mondayTimeTable.add(group.getGroupName());
+            System.out.println("Hours per day: " + properties.getHoursPerDay());
+            System.out.println("Properties: " + properties);
+            for (int i = 1; i < properties.getHoursPerDay(); i++) {
+                mondayTimeTable.add("Empty");
+            }
         }
         
+            
         return mondayTimeTable;
     }
+
+    public List<String> getTeachersListForOptm() {
+        teachersListForOptm = new ArrayList<>();
+        teachersListForOptm = usersBean.getTeachersNames();
+        System.out.println("Teachers list before shuffle: " + teachersListForOptm);
+        Collections.shuffle(teachersListForOptm);
+        System.out.println("Teachers list after shuffle: " + teachersListForOptm);
+        return teachersListForOptm;
+    }
+    
+    @Inject
+    public void setProperties(PropertiesForOptimizationBean properties) {
+        this.properties = properties;
+    }
+    
+    
 
 }

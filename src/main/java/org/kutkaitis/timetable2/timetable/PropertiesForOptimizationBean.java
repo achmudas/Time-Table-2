@@ -18,23 +18,20 @@
 package org.kutkaitis.timetable2.timetable;
 
 import java.io.Serializable;
+import javax.ejb.Singleton;
+import javax.enterprise.context.Dependent;
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
 
 /**
  *
  * @author MkA
  */
-@ManagedBean(name="propertiesForOptimizationBean")
-@SessionScoped
+@Named
 public class PropertiesForOptimizationBean implements Serializable{
 
-    /**
-     * Creates a new instance of PropertiesForOptimisation
-     */
-    public PropertiesForOptimizationBean() {
-    }
-    
     private int optimizationIterations;
     private int hoursPerDay;
     private String optimizationMethod;

@@ -191,6 +191,7 @@ public class StudentsMockDataFiller {
         }
         teacher.setName(name);
         teacher.setTeacherDisciplines(disciplines);
+        teacher.setTeachersGroups(new ArrayList<Group>());
         teachers.put(name, teacher);
         return teacher;
     }
@@ -202,6 +203,7 @@ public class StudentsMockDataFiller {
         group.setTeacher(teacher);
         group.setGroupName(name);
         groups.put(name, group);
+        teacher.getTeachersGroups().add(group);
         return group;
     }
 

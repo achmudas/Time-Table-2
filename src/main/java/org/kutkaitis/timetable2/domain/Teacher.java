@@ -10,6 +10,15 @@ public class Teacher {
     
     private String name;
     private List<Discipline> teacherDisciplines;
+    private List<Group> teachersGroups;
+
+    public List<Group> getTeachersGroups() {
+        return teachersGroups;
+    }
+
+    public void setTeachersGroups(List<Group> teachersGroups) {
+        this.teachersGroups = teachersGroups;
+    }
 
     public String getName() {
         return name;

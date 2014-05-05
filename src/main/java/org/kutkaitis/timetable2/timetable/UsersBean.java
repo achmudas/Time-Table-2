@@ -19,6 +19,7 @@ package org.kutkaitis.timetable2.timetable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.ejb.Singleton;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
@@ -28,9 +29,9 @@ import org.kutkaitis.timetable2.mock.StudentsMockDataFiller;
  *
  * @author MkA
  */
-@ManagedBean(name="usersBean")
+@ManagedBean(name = "usersBean")
 @SessionScoped
-public class UsersBean{
+public class UsersBean {
 
     @Inject
     StudentsMockDataFiller studentsMockDataFiller;
@@ -41,15 +42,12 @@ public class UsersBean{
     }
 
     public List<String> getTeachersNames() {
-        if (teachersNames.isEmpty()) {
-            teachersNames.addAll(studentsMockDataFiller.getTeachers().keySet());
-            Collections.shuffle(teachersNames);
-        }
+        teachersNames.addAll(studentsMockDataFiller.getTeachers().keySet());
         return teachersNames;
     }
 
     public void setTeachersNames(List<String> teachersNames) {
         this.teachersNames = teachersNames;
     }
-    
+
 }

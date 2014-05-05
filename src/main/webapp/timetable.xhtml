@@ -16,73 +16,13 @@
                             <p:tab id="tab1" title="Monday">
                                 <h:panelGrid columns="2" cellpadding="10" >
                                     <h:panelGrid columns="1" cellpadding="10" border="1" >
-                                        <c:forEach items="#{usersBean.teachersNames}" var="teacherName">
+                                        <c:forEach items="#{monteCarlo.teachersListForOptm}" var="teacherName">
                                             <h:outputLabel value="#{teacherName}" />
                                         </c:forEach>
                                     </h:panelGrid>
                                     <h:panelGrid columns="10" cellpadding="10" border="1">
-                                        <c:forEach items="#{initialTimetable.mondayTimeTable}" var="mondayTm">
-                                            <h:outputLabel value="#{mondayTm.groupName}" />
-                                        </c:forEach>
-                                    </h:panelGrid>
-                                </h:panelGrid>
-                            </p:tab>
-
-                            <p:tab id="tab2" title="Tuesday">
-                                <h:panelGrid columns="2" cellpadding="10" >
-                                    <h:panelGrid columns="1" cellpadding="10" border="1" >
-                                        <c:forEach items="#{usersBean.teachersNames}" var="teacherName">
-                                            <h:outputLabel value="#{teacherName}" />
-                                        </c:forEach>
-                                    </h:panelGrid>
-                                    <h:panelGrid columns="10" cellpadding="10" border="1">
-                                        <c:forEach items="#{initialTimetable.tuesdayTimeTable}" var="tuesdayTm">
-                                            <h:outputLabel value="#{tuesdayTm.groupName}" />
-                                        </c:forEach>
-                                    </h:panelGrid>
-                                </h:panelGrid>
-                            </p:tab>
-
-                            <p:tab id="tab3" title="Wednesday">
-                                <h:panelGrid columns="2" cellpadding="10" >
-                                    <h:panelGrid columns="1" cellpadding="10" border="1" >
-                                        <c:forEach items="#{usersBean.teachersNames}" var="teacherName">
-                                            <h:outputLabel value="#{teacherName}" />
-                                        </c:forEach>
-                                    </h:panelGrid>
-                                    <h:panelGrid columns="10" cellpadding="10" border="1">
-                                        <c:forEach items="#{initialTimetable.wednesdayTimeTable}" var="wednesdayTm">
-                                            <h:outputLabel value="#{wednesdayTm.groupName}" />
-                                        </c:forEach>
-                                    </h:panelGrid>
-                                </h:panelGrid>
-                            </p:tab>
-
-                            <p:tab id="tab4" title="Thursday">
-                                <h:panelGrid columns="2" cellpadding="10" >
-                                    <h:panelGrid columns="1" cellpadding="10" border="1" >
-                                        <c:forEach items="#{usersBean.teachersNames}" var="teacherName">
-                                            <h:outputLabel value="#{teacherName}" />
-                                        </c:forEach>
-                                    </h:panelGrid>
-                                    <h:panelGrid columns="10" cellpadding="10" border="1">
-                                        <c:forEach items="#{initialTimetable.thursdayTimeTable}" var="thursdayTm">
-                                            <h:outputLabel value="#{thursdayTm.groupName}" />
-                                        </c:forEach>
-                                    </h:panelGrid>
-                                </h:panelGrid>
-                            </p:tab>
-
-                            <p:tab id="tab5" title="Friday">
-                                <h:panelGrid columns="2" cellpadding="10" >
-                                    <h:panelGrid columns="1" cellpadding="10" border="1" >
-                                        <c:forEach items="#{usersBean.teachersNames}" var="teacherName">
-                                            <h:outputLabel value="#{teacherName}" />
-                                        </c:forEach>
-                                    </h:panelGrid>
-                                    <h:panelGrid columns="10" cellpadding="10" border="1">
-                                        <c:forEach items="#{initialTimetable.fridayTimeTable}" var="fridayTm">
-                                            <h:outputLabel value="#{fridayTm.groupName}" />
+                                        <c:forEach items="#{monteCarlo.optimizedTimeTableForTeacherMonday}" var="mondayTm">
+                                            <h:outputLabel value="#{mondayTm}" />
                                         </c:forEach>
                                     </h:panelGrid>
                                 </h:panelGrid>
