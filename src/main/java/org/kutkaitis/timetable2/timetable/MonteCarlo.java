@@ -54,8 +54,8 @@ public class MonteCarlo extends OptimizationAlgorithm {
             Group group = teacher.getTeachersGroups().get(0);
 //            System.out.println("Group: " + group.getGroupName());
             mondayTimeTable.add(group.getGroupName());
-            System.out.println("Hours per day: " + properties.getHoursPerDay());
-            System.out.println("Properties: " + properties);
+//            System.out.println("Hours per day: " + properties.getHoursPerDay());
+//            System.out.println("Properties: " + properties);
             for (int i = 1; i < properties.getHoursPerDay(); i++) {
                 mondayTimeTable.add("Empty");
             }
@@ -68,9 +68,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
     public List<String> getTeachersListForOptm() {
         teachersListForOptm = new ArrayList<>();
         teachersListForOptm = usersBean.getTeachersNames();
-        System.out.println("Teachers list before shuffle: " + teachersListForOptm);
         Collections.shuffle(teachersListForOptm);
-        System.out.println("Teachers list after shuffle: " + teachersListForOptm);
         return teachersListForOptm;
     }
     

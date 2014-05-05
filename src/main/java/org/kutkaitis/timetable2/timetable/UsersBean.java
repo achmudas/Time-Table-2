@@ -38,10 +38,10 @@ public class UsersBean {
     List<String> teachersNames;
 
     public UsersBean() {
-        teachersNames = new ArrayList<>();
     }
 
     public List<String> getTeachersNames() {
+        teachersNames = new ArrayList<>();
         teachersNames.addAll(studentsMockDataFiller.getTeachers().keySet());
         return teachersNames;
     }
