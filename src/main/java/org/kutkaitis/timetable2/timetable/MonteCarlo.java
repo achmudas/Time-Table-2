@@ -35,7 +35,6 @@ import org.kutkaitis.timetable2.mock.StudentsMockDataFiller;
  */
 @ManagedBean(name = "monteCarlo")
 @SessionScoped
-@Singleton
 public class MonteCarlo extends OptimizationAlgorithm {
 
     @Inject
@@ -68,9 +67,12 @@ public class MonteCarlo extends OptimizationAlgorithm {
     }
 
     public List<String> getTeachersListForOptm() {
-        teachersListForOptm = new ArrayList<>();
-        teachersListForOptm = usersBean.getTeachersNames();
-        Collections.shuffle(teachersListForOptm);
+        if (teachersListForOptm == null) {
+            teachersListForOptm = new ArrayList<>();
+            teachersListForOptm = usersBean.getTeachersNames();
+            System.out.println("teachersListForOptm: " + teachersListForOptm.toString());
+            Collections.shuffle(teachersListForOptm);
+        }
         return teachersListForOptm;
     }
     
