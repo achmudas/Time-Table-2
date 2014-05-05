@@ -42,7 +42,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
     StudentsMockDataFiller studentsMockDataFiller;
     @Inject
     UsersBean usersBean;
-    @EJB
+    @Inject
     PropertiesForOptimizationBean properties;
     
     List<String> teachersListForOptm;

@@ -18,19 +18,15 @@
 package org.kutkaitis.timetable2.timetable;
 
 import java.io.Serializable;
-import javax.ejb.Singleton;
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 /**
  *
  * @author MkA
  */
-@Stateless
+@Named
+@Singleton
 public class PropertiesForOptimizationBean implements Serializable{
 
     private int optimizationIterations;
@@ -60,8 +56,6 @@ public class PropertiesForOptimizationBean implements Serializable{
     public void setOptimisationMethod(String optimisationMethod) {
         this.optimizationMethod = optimisationMethod;
     }
-    
-    
     
     
 }
