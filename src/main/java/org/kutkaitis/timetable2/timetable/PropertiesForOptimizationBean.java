@@ -26,6 +26,7 @@ import javax.inject.Singleton;
  * @author MkA
  */
 @Named
+@Singleton
 public class PropertiesForOptimizationBean implements Serializable{
 
     private int optimizationIterations;
