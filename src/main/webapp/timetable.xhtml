@@ -20,9 +20,11 @@
                                             <h:outputLabel value="#{teacherName}" />
                                         </c:forEach>
                                     </h:panelGrid>
-                                    <h:panelGrid columns="10" cellpadding="10" border="1">
+                                    <h:panelGrid columns="#{propertiesForOptimizationBean.hoursPerDay}" cellpadding="10" border="1">
                                         <c:forEach items="#{monteCarlo.optimizedTimeTableForTeacherMonday}" var="mondayTm">
-                                            <h:outputLabel value="#{mondayTm}" />
+                                            <c:forEach items="#{mondayTm.value}" var="group">
+                                                <h:outputLabel value="#{group.value}" />
+                                            </c:forEach>
                                         </c:forEach>
                                     </h:panelGrid>
                                 </h:panelGrid>

@@ -18,7 +18,9 @@ package org.kutkaitis.timetable2.timetable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Random;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
@@ -41,38 +43,71 @@ public class MonteCarlo extends OptimizationAlgorithm {
     UsersBean usersBean;
     @Inject
     PropertiesForOptimizationBean properties;
-    
+
     List<String> teachersListForOptm;
 
-    List<String> mondayTimeTable;
+    private LinkedHashMap<String, LinkedHashMap> mondayTimeTable;
 
-    public List<String> getOptimizedTimeTableForTeacherMonday() {
-        mondayTimeTable = new ArrayList<>();
-        for (String teacherName : teachersListForOptm) {
-            System.out.print("Teacher name: " + teacherName);
-            Teacher teacher = studentsMockDataFiller.getTeachers().get(teacherName);
-            Group group = teacher.getTeachersGroups().get(0);
-            System.out.print("; Group: " + group.getGroupName());
-            mondayTimeTable.add(group.getGroupName());
-            System.out.println("; Hours per day: " + properties.getHoursPerDay());
-            for (int i = 1; i < properties.getHoursPerDay(); i++) {
-                mondayTimeTable.add("Empty");
+    public LinkedHashMap getOptimizedTimeTableForTeacherMonday() {
+        if (mondayTimeTable == null) { //TODO fix according java beans spec, that getter cannot have any business logic
+            mondayTimeTable = new LinkedHashMap<>();
+            LinkedHashMap<String, String> teachersTimeTable;
+
+            for (int lectureNumber = 1; lectureNumber <= properties.getHoursPerDay(); lectureNumber++) {
+                for (String teacherName : teachersListForOptm) {
+                    teachersTimeTable = getTeachersTimeTable(teacherName);
+                    Teacher teacher = studentsMockDataFiller.getTeachers().get(teacherName);
+                    List<Group> teachersGroups = teacher.getTeachersGroups();
+                    int teachersGroupsTotal = teachersGroups.size();
+
+                    if (teachersGroupsTotal == 0) {
+                        continue;
+                    }
+
+                    Group group = getRandomGroup(teachersGroups, teachersGroupsTotal);
+                    System.out.println("Group: " + group.getGroupName());
+                    teachersTimeTable.put(String.valueOf(lectureNumber), group.getGroupName());
+                    teachersGroups.remove(group);
+
+                }
             }
         }
-        
-            
         return mondayTimeTable;
+    }
+
+    private LinkedHashMap<String, String> getTeachersTimeTable(String teacherName) {
+        LinkedHashMap<String, String> teachersTimeTable;
+        if (!mondayTimeTable.containsKey(teacherName)) {
+            teachersTimeTable = new LinkedHashMap<>();
+            mondayTimeTable.put(teacherName, teachersTimeTable);
+        } else {
+            teachersTimeTable = mondayTimeTable.get(teacherName);
+        }
+        return teachersTimeTable;
     }
 
     public List<String> getTeachersListForOptm() {
         if (teachersListForOptm == null) {
             teachersListForOptm = new ArrayList<>();
             teachersListForOptm = usersBean.getTeachersNames();
-            System.out.println("teachersListForOptm: " + teachersListForOptm.toString());
             Collections.shuffle(teachersListForOptm);
         }
         return teachersListForOptm;
     }
-    
+
+    private int generateRandomInteger(int teachersGroupsTotal) {
+        Random random = new Random();
+        return random.nextInt(teachersGroupsTotal);
+    }
+
+    private Group getRandomGroup(List<Group> groups, int teachersGroupsTotal) {
+        int randomNumber = generateRandomInteger(teachersGroupsTotal);
+        Group group = groups.get(randomNumber);
+        if (group == null) {
+            this.getRandomGroup(groups, teachersGroupsTotal);
+        }
+
+        return group;
+    }
 
 }
