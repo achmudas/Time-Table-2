@@ -35,7 +35,8 @@ public class UsersBean {
 
     @Inject
     StudentsMockDataFiller studentsMockDataFiller;
-    List<String> teachersNames;
+    private List<String> teachersNames;
+    private List<String> teachersNamesFromIIIAndIV;
 
     public UsersBean() {
     }
@@ -50,4 +51,14 @@ public class UsersBean {
         this.teachersNames = teachersNames;
     }
 
+    public List<String> getTeachersNamesFromIIIAndIV() {
+        teachersNamesFromIIIAndIV = new ArrayList<>();
+        teachersNamesFromIIIAndIV.addAll(studentsMockDataFiller.getTeachersFromIIIAndIV().keySet());
+        return teachersNamesFromIIIAndIV;
+    }
+
+    public void setTeachersNamesFromIIIAndIV(List<String> teachersNamesFromIIIAndIV) {
+        this.teachersNamesFromIIIAndIV = teachersNamesFromIIIAndIV;
+    }
+    
 }

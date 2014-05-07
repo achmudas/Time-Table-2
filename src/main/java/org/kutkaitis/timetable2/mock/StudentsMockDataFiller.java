@@ -21,6 +21,7 @@ public class StudentsMockDataFiller {
 
     private HashMap<String, Group> groups = new HashMap<String, Group>();
     private HashMap<String, Teacher> teachers = new HashMap<String, Teacher>();
+    private HashMap<String, Teacher> teachersFromIIIAndIV = new HashMap<String, Teacher>();
 
     public HashMap<String, Group> getGroups() {
         return groups;
@@ -28,6 +29,10 @@ public class StudentsMockDataFiller {
 
     public HashMap<String, Teacher> getTeachers() {
         return teachers;
+    }
+
+    public HashMap<String, Teacher> getTeachersFromIIIAndIV() {
+        return teachersFromIIIAndIV;
     }
 
     // Creates mock data at the start of application
@@ -44,10 +49,10 @@ public class StudentsMockDataFiller {
         choosenDisciplinesI_II.add(angI_II);
         choosenDisciplinesI_II.add(ltI_II);
 
-        Teacher mtTeacherI_II_IIIA_IVA = createTeacher("TeacherI&II&IIIA&IVAMt", mtI_II);
-        Teacher ltTeacherI_II = createTeacher("TeacherI&IILt", ltI_II);
-        Teacher fzTeacherI_II_IIIA_IVA = createTeacher("TeacherI&II&IIIA&IVAFz", fzI_II);
-        Teacher angTeacherI_II = createTeacher("TeacherI&IIAng", angI_II);
+        Teacher mtTeacherI_II_IIIA_IVA = createTeacher("TeacherI&II&IIIA&IVAMt", true, mtI_II);
+        Teacher ltTeacherI_II = createTeacher("TeacherI&IILt", false, ltI_II);
+        Teacher fzTeacherI_II_IIIA_IVA = createTeacher("TeacherI&II&IIIA&IVAFz", true, fzI_II);
+        Teacher angTeacherI_II = createTeacher("TeacherI&IIAng", false, angI_II );
 
         List<Student> studentsIList1 = createStudentsList("StudentI_", 1, 30, choosenDisciplinesI_II);
         List<Student> studentsIList2 = createStudentsList("StudentI_", 31, 60, choosenDisciplinesI_II);
@@ -90,11 +95,11 @@ public class StudentsMockDataFiller {
         Discipline fzIIIB_IVB = createDiscipline("Fizika B", "2");
         Discipline angIIIB_IVB = createDiscipline("Anglu kalba B", "3");
 
-        Teacher mtTeacherIIIB_IVB = createTeacher("TeacherIIIB&IVBMt", mtIIIB_IVB);
-        Teacher ltTeacherIIIA_IVA = createTeacher("TeacherIIIA&IVALt", ltIIIA_IVA);
-        Teacher ltTeacherIIIB_IVB = createTeacher("TeacherIIIB&IVBLt", ltIIIB_IVB);
-        Teacher fzTeacherIIIB_IVB = createTeacher("TeacherIIIB&IVBFz", fzIIIB_IVB);
-        Teacher angTeacherIIIA_IVA_IIIB_IVB = createTeacher("TeacherIIIA&IVA&IIIB&IVBAng", angIIIA_IVA, angIIIB_IVB);
+        Teacher mtTeacherIIIB_IVB = createTeacher("TeacherIIIB&IVBMt", true, mtIIIB_IVB);
+        Teacher ltTeacherIIIA_IVA = createTeacher("TeacherIIIA&IVALt", true, ltIIIA_IVA);
+        Teacher ltTeacherIIIB_IVB = createTeacher("TeacherIIIB&IVBLt", true, ltIIIB_IVB);
+        Teacher fzTeacherIIIB_IVB = createTeacher("TeacherIIIB&IVBFz", true, fzIIIB_IVB);
+        Teacher angTeacherIIIA_IVA_IIIB_IVB = createTeacher("TeacherIIIA&IVA&IIIB&IVBAng", true, angIIIA_IVA, angIIIB_IVB);
 
         // 3 gymnasium groups
         List<Discipline> choosenDisciplinesIII_IV_hum = new ArrayList<>();
@@ -179,7 +184,7 @@ public class StudentsMockDataFiller {
         return discipline;
     }
 
-    private Teacher createTeacher(String name, Discipline... discipline) {
+    private Teacher createTeacher(String name, boolean teachesInIIIAndIV, Discipline... discipline) {
         Teacher teacher = new Teacher();
         List<Discipline> disciplines = new ArrayList<>();
         for (Discipline disp : discipline) {
@@ -188,30 +193,18 @@ public class StudentsMockDataFiller {
         teacher.setName(name);
         teacher.setTeacherDisciplines(disciplines);
 
-        for (Discipline disp : disciplines) {
-            String dispName = disp.getDisciplineName();
-            int iOccurMatches = StringUtils.countMatches(name, "I");
-            boolean teachesI = false;
-            boolean teachesII = false;
-            boolean teachesIII = false;
-            boolean teachesIV = false;
-            if (iOccurMatches == 1 && !StringUtils.contains(name, "IV")) {
-                teachesI = true;
-            } else if (iOccurMatches == 2) {
-                teachesII = true;
-            } else if (iOccurMatches == 3) {
-                teachesIII = true;
-            } else {
-                teachesIV = true;
+        if (teachesInIIIAndIV) {
+            teacher.setTeacherInIIIAndIVGymnasiumClasses(true);
+            if (!teachersFromIIIAndIV.containsKey(name)) {
+                teachersFromIIIAndIV.put(name, teacher);
             }
-            
-            if (teachesIII || teachesIV) {
-                teacher.setTeacherInIIIAndIVGymnasiumClasses(true);
-            }
+
         }
 
         teacher.setTeachersGroups(new ArrayList<Group>());
+        System.out.println("Teachers from III and IV: " + teachersFromIIIAndIV.keySet());
         teachers.put(name, teacher);
+
         return teacher;
     }
 

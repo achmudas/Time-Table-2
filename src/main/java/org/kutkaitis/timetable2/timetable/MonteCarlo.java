@@ -44,7 +44,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
     @Inject
     PropertiesForOptimizationBean properties;
 
-    List<String> teachersListForOptm;
+    List<String> teachersListOfIIIAndIVForOptm;
 
     private LinkedHashMap<String, LinkedHashMap> mondayTimeTable;
 
@@ -53,7 +53,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
         LinkedHashMap<String, String> teachersTimeTable;
 
         for (int lectureNumber = 1; lectureNumber <= properties.getHoursPerDay(); lectureNumber++) {
-            for (String teacherName : teachersListForOptm) {
+            for (String teacherName : teachersListOfIIIAndIVForOptm) {
                 teachersTimeTable = getTeachersTimeTable(teacherName);
                 Teacher teacher = studentsMockDataFiller.getTeachers().get(teacherName);
                 List<Group> teachersGroups = teacher.getTeachersGroups();
@@ -65,7 +65,6 @@ public class MonteCarlo extends OptimizationAlgorithm {
                     continue;
                 }
                 Group group = getRandomGroup(teachersGroups, teachersGroupsTotal);
-                // 
 
                 teachersTimeTable.put(String.valueOf(lectureNumber), group.getGroupName());
                 teachersGroups.remove(group);
@@ -92,13 +91,13 @@ public class MonteCarlo extends OptimizationAlgorithm {
         return teachersTimeTable;
     }
 
-    public List<String> getTeachersListForOptm() {
-        if (teachersListForOptm == null) {
-            teachersListForOptm = new ArrayList<>();
-            teachersListForOptm = usersBean.getTeachersNames();
-            Collections.shuffle(teachersListForOptm);
+    public List<String> getTeachersListOfIIIAndIVForOptm() {
+        if (teachersListOfIIIAndIVForOptm == null) {
+            teachersListOfIIIAndIVForOptm = new ArrayList<>();
+            teachersListOfIIIAndIVForOptm = usersBean.getTeachersNamesFromIIIAndIV();
+            Collections.shuffle(teachersListOfIIIAndIVForOptm);
         }
-        return teachersListForOptm;
+        return teachersListOfIIIAndIVForOptm;
     }
 
     private int generateRandomInteger(int teachersGroupsTotal) {
