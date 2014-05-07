@@ -60,14 +60,27 @@ public class MonteCarlo extends OptimizationAlgorithm {
 
                 int teachersGroupsTotal = teachersGroups.size();
 
-
                 if (teachersGroupsTotal == 0) {
                     continue;
                 }
+
+                int counter = 0;
+                for (Group grp : teachersGroups) {
+                    if (grp.isIiiGymnasiumGroup() || grp.isIvGymnasiumGroup()) {
+                        counter++;
+                    }
+                }
+
+                if (counter == 0) {
+                    continue;
+                }
+
                 Group group = getRandomGroup(teachersGroups, teachersGroupsTotal);
 
-                teachersTimeTable.put(String.valueOf(lectureNumber), group.getGroupName());
-                teachersGroups.remove(group);
+                if (group != null) {
+                    teachersTimeTable.put(String.valueOf(lectureNumber), group.getGroupName());
+                    teachersGroups.remove(group);
+                }
 
             }
         }
@@ -106,22 +119,14 @@ public class MonteCarlo extends OptimizationAlgorithm {
     }
 
     private Group getRandomGroup(List<Group> groups, int teachersGroupsTotal) {
-      //  System.out.println("groups size: " + teachersGroupsTotal);
+        //  System.out.println("groups size: " + teachersGroupsTotal);
         int randomNumber = generateRandomInteger(teachersGroupsTotal);
         Group group = groups.get(randomNumber);
-        int counter = 0;
-        for (Group grp : groups) {
-            if (grp.isIiiGymnasiumGroup() || grp.isIvGymnasiumGroup()) {
-                counter++;
-            }
-        }
 
-        if (counter > 0) { // Generate only for gymnasium classes
-            if (group == null || group.isIiGymnasiumGroup() || group.isiGymnasiumGroup()) {
-                this.getRandomGroup(groups, teachersGroupsTotal);
-            }
+        if (group == null || group.isIiGymnasiumGroup() || group.isiGymnasiumGroup()) {
+            this.getRandomGroup(groups, teachersGroupsTotal);
+            group = null;
         }
-
         return group;
     }
 
