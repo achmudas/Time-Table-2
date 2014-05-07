@@ -12,6 +12,10 @@ public class Group {
     private String groupName;
     private Discipline discipline;
     private List<Student> students;
+    private boolean iGymnasiumGroup;
+    private boolean iiGymnasiumGroup;
+    private boolean iiiGymnasiumGroup;
+    private boolean ivGymnasiumGroup;
 
     public String getGroupName() {
         return groupName;
@@ -45,6 +49,36 @@ public class Group {
         this.students = students;
     }
 
-    
+    public boolean isiGymnasiumGroup() {
+        return iGymnasiumGroup;
+    }
+
+    public void setiGymnasiumGroup(boolean iGymnasiumGroup) {
+        this.iGymnasiumGroup = iGymnasiumGroup;
+    }
+
+    public boolean isIiGymnasiumGroup() {
+        return iiGymnasiumGroup;
+    }
+
+    public void setIiGymnasiumGroup(boolean iiGymnasiumGroup) {
+        this.iiGymnasiumGroup = iiGymnasiumGroup;
+    }
+
+    public boolean isIiiGymnasiumGroup() {
+        return iiiGymnasiumGroup;
+    }
+
+    public void setIiiGymnasiumGroup(boolean iiiGymnasiumGroup) {
+        this.iiiGymnasiumGroup = iiiGymnasiumGroup;
+    }
+
+    public boolean isIvGymnasiumGroup() {
+        return ivGymnasiumGroup;
+    }
+
+    public void setIvGymnasiumGroup(boolean ivGymnasiumGroup) {
+        this.ivGymnasiumGroup = ivGymnasiumGroup;
+    }
 
 }

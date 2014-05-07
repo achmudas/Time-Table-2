@@ -6,9 +6,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Startup;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.inject.Named;
+import org.apache.commons.lang3.StringUtils;
 import org.kutkaitis.timetable2.domain.Discipline;
 import org.kutkaitis.timetable2.domain.Group;
 import org.kutkaitis.timetable2.domain.Student;
@@ -20,7 +18,7 @@ import org.kutkaitis.timetable2.domain.Teacher;
  */
 @Startup
 public class StudentsMockDataFiller {
-    
+
     private HashMap<String, Group> groups = new HashMap<String, Group>();
     private HashMap<String, Teacher> teachers = new HashMap<String, Teacher>();
 
@@ -31,9 +29,7 @@ public class StudentsMockDataFiller {
     public HashMap<String, Teacher> getTeachers() {
         return teachers;
     }
-    
-    
-    
+
     // Creates mock data at the start of application
     @PostConstruct
     public void init() {
@@ -138,7 +134,7 @@ public class StudentsMockDataFiller {
         createGroup(studentsIIIListHum1, fzIIIB_IVB, fzTeacherIIIB_IVB, "FzBIII1");
         createGroup(studentsIIIListHum2, fzIIIB_IVB, fzTeacherIIIB_IVB, "FzBIII2");
 
-        createGroup(studentsIIIListHum1, angIIIA_IVA, angTeacherIIIA_IVA_IIIB_IVB,"AngAIII1");
+        createGroup(studentsIIIListHum1, angIIIA_IVA, angTeacherIIIA_IVA_IIIB_IVB, "AngAIII1");
         createGroup(studentsIIIListHum2, angIIIA_IVA, angTeacherIIIA_IVA_IIIB_IVB, "AngAIII2");
 
         createGroup(studentsIIIListReal1, angIIIB_IVB, angTeacherIIIA_IVA_IIIB_IVB, "AngBIII1");
@@ -191,6 +187,29 @@ public class StudentsMockDataFiller {
         }
         teacher.setName(name);
         teacher.setTeacherDisciplines(disciplines);
+
+        for (Discipline disp : disciplines) {
+            String dispName = disp.getDisciplineName();
+            int iOccurMatches = StringUtils.countMatches(name, "I");
+            boolean teachesI = false;
+            boolean teachesII = false;
+            boolean teachesIII = false;
+            boolean teachesIV = false;
+            if (iOccurMatches == 1 && !StringUtils.contains(name, "IV")) {
+                teachesI = true;
+            } else if (iOccurMatches == 2) {
+                teachesII = true;
+            } else if (iOccurMatches == 3) {
+                teachesIII = true;
+            } else {
+                teachesIV = true;
+            }
+            
+            if (teachesIII || teachesIV) {
+                teacher.setTeacherInIIIAndIVGymnasiumClasses(true);
+            }
+        }
+
         teacher.setTeachersGroups(new ArrayList<Group>());
         teachers.put(name, teacher);
         return teacher;
@@ -202,9 +221,23 @@ public class StudentsMockDataFiller {
         group.setDiscipline(discipline);
         group.setTeacher(teacher);
         group.setGroupName(name);
+        decideGymnasiumGroup(name, group);
         groups.put(name, group);
         teacher.getTeachersGroups().add(group);
         return group;
+    }
+
+    private void decideGymnasiumGroup(String name, Group group) {
+        int iOccurMatches = StringUtils.countMatches(name, "I");
+        if (iOccurMatches == 1 && !StringUtils.contains(name, "IV")) {
+            group.setiGymnasiumGroup(true);
+        } else if (iOccurMatches == 2) {
+            group.setIiGymnasiumGroup(true);
+        } else if (iOccurMatches == 3) {
+            group.setIiiGymnasiumGroup(true);
+        } else {
+            group.setIvGymnasiumGroup(true);
+        }
     }
 
     private List createStudentsList(String studentName, int from, int until, List<Discipline> choosenDisciplines) {
@@ -220,10 +253,9 @@ public class StudentsMockDataFiller {
 
         return studentsList;
     }
-     
+
     @PreDestroy
     public void destroy() {
     }
-    
 
 }

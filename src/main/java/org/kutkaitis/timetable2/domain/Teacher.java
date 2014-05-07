@@ -11,6 +11,7 @@ public class Teacher {
     private String name;
     private List<Discipline> teacherDisciplines;
     private List<Group> teachersGroups;
+    private boolean teacherInIIIAndIVGymnasiumClasses;
 
     public List<Group> getTeachersGroups() {
         return teachersGroups;
@@ -35,7 +36,15 @@ public class Teacher {
     public void setTeacherDisciplines(List<Discipline> teacherDisciplines) {
         this.teacherDisciplines = teacherDisciplines;
     }
-    
+
+    public boolean isTeacherInIIIAndIVGymnasiumClasses() {
+        return teacherInIIIAndIVGymnasiumClasses;
+    }
+
+    public void setTeacherInIIIAndIVGymnasiumClasses(boolean teacherInIIIAndIVGymnasiumClasses) {
+        this.teacherInIIIAndIVGymnasiumClasses = teacherInIIIAndIVGymnasiumClasses;
+    }
+
     
 
 }

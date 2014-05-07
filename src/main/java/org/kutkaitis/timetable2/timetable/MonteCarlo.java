@@ -48,29 +48,35 @@ public class MonteCarlo extends OptimizationAlgorithm {
 
     private LinkedHashMap<String, LinkedHashMap> mondayTimeTable;
 
+    private void optimizeMondayTimeTableForIIIAndIVGymnasium() {
+        mondayTimeTable = new LinkedHashMap<>();
+        LinkedHashMap<String, String> teachersTimeTable;
+
+        for (int lectureNumber = 1; lectureNumber <= properties.getHoursPerDay(); lectureNumber++) {
+            for (String teacherName : teachersListForOptm) {
+                teachersTimeTable = getTeachersTimeTable(teacherName);
+                Teacher teacher = studentsMockDataFiller.getTeachers().get(teacherName);
+                List<Group> teachersGroups = teacher.getTeachersGroups();
+
+                int teachersGroupsTotal = teachersGroups.size();
+
+
+                if (teachersGroupsTotal == 0) {
+                    continue;
+                }
+                Group group = getRandomGroup(teachersGroups, teachersGroupsTotal);
+                // 
+
+                teachersTimeTable.put(String.valueOf(lectureNumber), group.getGroupName());
+                teachersGroups.remove(group);
+
+            }
+        }
+    }
+
     public LinkedHashMap getOptimizedTimeTableForTeacherMonday() {
         if (mondayTimeTable == null) { //TODO fix according java beans spec, that getter cannot have any business logic
-            mondayTimeTable = new LinkedHashMap<>();
-            LinkedHashMap<String, String> teachersTimeTable;
-
-            for (int lectureNumber = 1; lectureNumber <= properties.getHoursPerDay(); lectureNumber++) {
-                for (String teacherName : teachersListForOptm) {
-                    teachersTimeTable = getTeachersTimeTable(teacherName);
-                    Teacher teacher = studentsMockDataFiller.getTeachers().get(teacherName);
-                    List<Group> teachersGroups = teacher.getTeachersGroups();
-                    int teachersGroupsTotal = teachersGroups.size();
-
-                    if (teachersGroupsTotal == 0) {
-                        continue;
-                    }
-
-                    Group group = getRandomGroup(teachersGroups, teachersGroupsTotal);
-                    System.out.println("Group: " + group.getGroupName());
-                    teachersTimeTable.put(String.valueOf(lectureNumber), group.getGroupName());
-                    teachersGroups.remove(group);
-
-                }
-            }
+            optimizeMondayTimeTableForIIIAndIVGymnasium();
         }
         return mondayTimeTable;
     }
@@ -101,10 +107,20 @@ public class MonteCarlo extends OptimizationAlgorithm {
     }
 
     private Group getRandomGroup(List<Group> groups, int teachersGroupsTotal) {
+      //  System.out.println("groups size: " + teachersGroupsTotal);
         int randomNumber = generateRandomInteger(teachersGroupsTotal);
         Group group = groups.get(randomNumber);
-        if (group == null) {
-            this.getRandomGroup(groups, teachersGroupsTotal);
+        int counter = 0;
+        for (Group grp : groups) {
+            if (grp.isIiiGymnasiumGroup() || grp.isIvGymnasiumGroup()) {
+                counter++;
+            }
+        }
+
+        if (counter > 0) { // Generate only for gymnasium classes
+            if (group == null || group.isIiGymnasiumGroup() || group.isiGymnasiumGroup()) {
+                this.getRandomGroup(groups, teachersGroupsTotal);
+            }
         }
 
         return group;
