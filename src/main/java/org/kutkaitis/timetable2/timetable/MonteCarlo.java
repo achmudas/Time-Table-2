@@ -17,6 +17,7 @@
 package org.kutkaitis.timetable2.timetable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,7 +26,9 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.apache.commons.collections.CollectionUtils;
 import org.kutkaitis.timetable2.domain.Group;
+import org.kutkaitis.timetable2.domain.Student;
 import org.kutkaitis.timetable2.domain.Teacher;
 import org.kutkaitis.timetable2.mock.StudentsMockDataFiller;
 
@@ -65,24 +68,37 @@ public class MonteCarlo extends OptimizationAlgorithm {
                 }
 
                 int counter = 0;
-                for (Group grp : teachersGroups) {
-                    if (grp.isIiiGymnasiumGroup() || grp.isIvGymnasiumGroup()) {
-                        counter++;
-                    }
-                }
+                counter = countThatThereIsIIIAndIVGymnGroups(teachersGroups, counter);
 
                 if (counter == 0) {
                     continue;
                 }
 
                 Group group = getRandomGroup(teachersGroups, teachersGroupsTotal);
-
-                if (group != null) {
-                    teachersTimeTable.put(String.valueOf(lectureNumber), group.getGroupName());
-                    teachersGroups.remove(group);
+                boolean isGroupAllowedToAdd = isMandatoryConditionsMet(teacher, teachersGroups, group, lectureNumber);
+                if (isGroupAllowedToAdd) {
+                    addGroupToTeachersTimeTable(group, teachersTimeTable, lectureNumber, teachersGroups);
+                } else {
+                    teachersTimeTable.put(String.valueOf(lectureNumber), "EMPTY");
                 }
 
             }
+        }
+    }
+
+    private int countThatThereIsIIIAndIVGymnGroups(List<Group> teachersGroups, int counter) {
+        for (Group grp : teachersGroups) {
+            if (grp.isIiiGymnasiumGroup() || grp.isIvGymnasiumGroup()) {
+                counter++;
+            }
+        }
+        return counter;
+    }
+
+    private void addGroupToTeachersTimeTable(Group group, LinkedHashMap<String, String> teachersTimeTable, int lectureNumber, List<Group> teachersGroups) {
+        if (group != null) {
+            teachersTimeTable.put(String.valueOf(lectureNumber), group.getGroupName());
+            teachersGroups.remove(group);
         }
     }
 
@@ -128,6 +144,33 @@ public class MonteCarlo extends OptimizationAlgorithm {
             group = null;
         }
         return group;
+    }
+
+    // TODO
+    // 1. check that student is having just one lecture at the time
+    // 2. check, that classroom is empty
+    private boolean isMandatoryConditionsMet(Teacher teacher, List<Group> teachersGroups, Group group, int lectureNumber) {
+        boolean mandatoryConditionsMet = false;
+        if (group != null) {
+            List<Student> groupStudents = group.getStudents();
+            Collection<LinkedHashMap> teachersTimeTables = mondayTimeTable.values();
+            for (LinkedHashMap<String, String> teachersTimeTable : teachersTimeTables) {
+                if (teachersTimeTable.isEmpty()) { continue; }
+                System.out.println("teachersTimeTable: " + teachersTimeTable);
+                String groupName = teachersTimeTable.get(String.valueOf(lectureNumber));
+                System.out.println("Group name: " + groupName);
+                Group groupToCheck = studentsMockDataFiller.getGroups().get(groupName);
+                System.out.println("Group to check: " + groupToCheck);
+                boolean contains = CollectionUtils.containsAny(groupStudents, groupToCheck.getStudents());
+                if (contains == false) {
+                    mandatoryConditionsMet = true;
+                } else {
+                    mandatoryConditionsMet = false;
+                    return mandatoryConditionsMet;
+                }
+            }
+        }
+        return mandatoryConditionsMet;
     }
 
 }
