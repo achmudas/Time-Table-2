@@ -25,8 +25,8 @@ import java.util.Random;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.kutkaitis.timetable2.domain.Group;
 import org.kutkaitis.timetable2.domain.Student;
 import org.kutkaitis.timetable2.domain.Teacher;
@@ -56,14 +56,19 @@ public class MonteCarlo extends OptimizationAlgorithm {
         LinkedHashMap<String, String> teachersTimeTable;
 
         for (int lectureNumber = 1; lectureNumber <= properties.getHoursPerDay(); lectureNumber++) {
+            System.out.println("--------------Lecture-----------------");
             for (String teacherName : teachersListOfIIIAndIVForOptm) {
+                System.out.println("--------------Teacher-----------------");
                 teachersTimeTable = getTeachersTimeTable(teacherName);
                 Teacher teacher = studentsMockDataFiller.getTeachers().get(teacherName);
                 List<Group> teachersGroups = teacher.getTeachersGroups();
 
                 int teachersGroupsTotal = teachersGroups.size();
+                System.out.println("teachersGroupsTotal: " + teachersGroupsTotal);
 
                 if (teachersGroupsTotal == 0) {
+                    teachersTimeTable.put(String.valueOf(lectureNumber), lectureNumber + ": -----");//Add group, because all the groups for teacher was added already
+                    System.out.println("add empty at the end");
                     continue;
                 }
 
@@ -71,17 +76,22 @@ public class MonteCarlo extends OptimizationAlgorithm {
                 counter = countThatThereIsIIIAndIVGymnGroups(teachersGroups, counter);
 
                 if (counter == 0) {
+                    teachersTimeTable.put(String.valueOf(lectureNumber), lectureNumber + ": -----");//Add group, because all the groups for teacher was added already
                     continue;
                 }
-
+                
                 Group group = getRandomGroup(teachersGroups, teachersGroupsTotal);
                 boolean isGroupAllowedToAdd = isMandatoryConditionsMet(teacher, teachersGroups, group, lectureNumber);
+                System.out.println("Grupe idejimui: " + group);
+                System.out.println("isGroupAllowedToAdd: " + isGroupAllowedToAdd);
+                System.out.println("lecture number: " + lectureNumber);
                 if (isGroupAllowedToAdd) {
+                    System.out.println("Mokytojas: " + teacherName);
+                    System.out.println("Grupe, kai galima deti ja: " + group);
                     addGroupToTeachersTimeTable(group, teachersTimeTable, lectureNumber, teachersGroups);
                 } else {
-                    teachersTimeTable.put(String.valueOf(lectureNumber), "EMPTY");
+                    teachersTimeTable.put(String.valueOf(lectureNumber), lectureNumber + ": -----");
                 }
-
             }
         }
     }
@@ -97,7 +107,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
 
     private void addGroupToTeachersTimeTable(Group group, LinkedHashMap<String, String> teachersTimeTable, int lectureNumber, List<Group> teachersGroups) {
         if (group != null) {
-            teachersTimeTable.put(String.valueOf(lectureNumber), group.getGroupName());
+            teachersTimeTable.put(String.valueOf(lectureNumber), lectureNumber + ": " + group.getGroupName());
             teachersGroups.remove(group);
         }
     }
@@ -138,6 +148,8 @@ public class MonteCarlo extends OptimizationAlgorithm {
         //  System.out.println("groups size: " + teachersGroupsTotal);
         int randomNumber = generateRandomInteger(teachersGroupsTotal);
         Group group = groups.get(randomNumber);
+        if (group != null)
+        System.out.println("Group in random group: " + group.getGroupName());
 
         if (group == null || group.isIiGymnasiumGroup() || group.isiGymnasiumGroup()) {
             this.getRandomGroup(groups, teachersGroupsTotal);
@@ -150,18 +162,31 @@ public class MonteCarlo extends OptimizationAlgorithm {
     // 1. check that student is having just one lecture at the time
     // 2. check, that classroom is empty
     private boolean isMandatoryConditionsMet(Teacher teacher, List<Group> teachersGroups, Group group, int lectureNumber) {
-        boolean mandatoryConditionsMet = false;
+        boolean mandatoryConditionsMet = true;
         if (group != null) {
+            System.out.println("Grupe idejimui: " + group.getGroupName());
             List<Student> groupStudents = group.getStudents();
             Collection<LinkedHashMap> teachersTimeTables = mondayTimeTable.values();
+            System.out.println("teachersTimeTables before if: " + teachersTimeTables);
             for (LinkedHashMap<String, String> teachersTimeTable : teachersTimeTables) {
-                if (teachersTimeTable.isEmpty()) { continue; }
+                System.out.println("Iskviete fore");
+                if (teachersTimeTable.isEmpty()) {
+                    mandatoryConditionsMet = true;
+                    continue;
+                }
                 System.out.println("teachersTimeTable: " + teachersTimeTable);
                 String groupName = teachersTimeTable.get(String.valueOf(lectureNumber));
                 System.out.println("Group name: " + groupName);
                 Group groupToCheck = studentsMockDataFiller.getGroups().get(groupName);
-                System.out.println("Group to check: " + groupToCheck);
-                boolean contains = CollectionUtils.containsAny(groupStudents, groupToCheck.getStudents());
+                boolean contains = true;
+                if (!StringUtils.equals(groupName, "e")) {
+                    contains = false;
+                }
+                if (groupToCheck != null) {
+                    System.out.println("Group to check: " + groupToCheck.getGroupName());
+                    contains = CollectionUtils.containsAny(groupStudents, groupToCheck.getStudents());
+                    System.out.println("Contains: " + contains);
+                }
                 if (contains == false) {
                     mandatoryConditionsMet = true;
                 } else {
@@ -169,6 +194,8 @@ public class MonteCarlo extends OptimizationAlgorithm {
                     return mandatoryConditionsMet;
                 }
             }
+        } else {
+            mandatoryConditionsMet = false;
         }
         return mandatoryConditionsMet;
     }

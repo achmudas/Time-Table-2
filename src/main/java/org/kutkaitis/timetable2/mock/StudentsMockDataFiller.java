@@ -202,7 +202,7 @@ public class StudentsMockDataFiller {
         }
 
         teacher.setTeachersGroups(new ArrayList<Group>());
-        System.out.println("Teachers from III and IV: " + teachersFromIIIAndIV.keySet());
+//        System.out.println("Teachers from III and IV: " + teachersFromIIIAndIV.keySet());
         teachers.put(name, teacher);
 
         return teacher;
