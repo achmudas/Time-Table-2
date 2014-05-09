@@ -56,13 +56,8 @@ public class MonteCarlo extends OptimizationAlgorithm {
     private void optimizeMondayTimeTableForIIIAndIVGymnasium() {
         mondayTimeTable = new LinkedHashMap<>();
         LinkedHashMap<String, String> teachersTimeTable;
-        HashMap<String, Teacher> teachersMapForDeletion = new HashMap<>();
-        for(Map.HashMap entry : studentsMockDataFiller.getTeachers().entrySet())
-  if(!teachersMapForDeletion.containsKey(entry.getKey()) {
-      teachersMapForDeletion.put(entry.getKey(), entry.getValue());
-  }
-    
-
+        HashMap<String, Teacher> teachersMapForDeletion = copyTeacherForDeletion();
+        
         for (int lectureNumber = 1; lectureNumber <= properties.getHoursPerDay(); lectureNumber++) {
             System.out.println("--------------Lecture-----------------");
             for (String teacherName : teachersListOfIIIAndIVForOptm) {
@@ -109,6 +104,31 @@ public class MonteCarlo extends OptimizationAlgorithm {
                 }
             }
         }
+    }
+
+    private HashMap<String, Teacher> copyTeacherForDeletion() {
+        HashMap<String, Teacher> teachersMapForDeletion = new HashMap<>();
+        for (Teacher teacher : studentsMockDataFiller.getTeachers().values()) {
+            Teacher teacherToBeAddForDel = new Teacher();
+            teacherToBeAddForDel.setName(teacher.getName());
+            teacherToBeAddForDel.setTeacherDisciplines(teacher.getTeacherDisciplines());
+            teacherToBeAddForDel.setTeacherInIIIAndIVGymnasiumClasses(teacher.isTeacherInIIIAndIVGymnasiumClasses());
+            teacherToBeAddForDel.setTeachersGroups(new ArrayList<Group>());
+            for (Group group : teacher.getTeachersGroups()) {
+                Group groupForDel = new Group();
+                groupForDel.setDiscipline(group.getDiscipline());
+                groupForDel.setGroupName(group.getGroupName());
+                groupForDel.setIiGymnasiumGroup(group.isIiGymnasiumGroup());
+                groupForDel.setIiiGymnasiumGroup(group.isIiiGymnasiumGroup());
+                groupForDel.setIvGymnasiumGroup(group.isIvGymnasiumGroup());
+                groupForDel.setiGymnasiumGroup(group.isiGymnasiumGroup());
+                groupForDel.setStudents(group.getStudents());
+                groupForDel.setTeacher(teacherToBeAddForDel);
+                teacherToBeAddForDel.getTeachersGroups().add(groupForDel);
+            }
+            teachersMapForDeletion.put(teacherToBeAddForDel.getName(), teacherToBeAddForDel);
+        }
+        return teachersMapForDeletion;
     }
 
     private int countThatThereIsIIIAndIVGymnGroups(List<Group> teachersGroups, int counter) {
@@ -171,7 +191,6 @@ public class MonteCarlo extends OptimizationAlgorithm {
     }
 
     // TODO
-    // 1. check that student is having just one lecture at the time
     // 2. check, that classroom is empty
     private boolean isMandatoryConditionsMet(Teacher teacher, List<Group> teachersGroups, Group group, int lectureNumber) {
         boolean mandatoryConditionsMet = true;
@@ -187,12 +206,18 @@ public class MonteCarlo extends OptimizationAlgorithm {
                     continue;
                 }
                 System.out.println("teachersTimeTable: " + teachersTimeTable);
-                String groupName = teachersTimeTable.get(String.valueOf(lectureNumber));
+                String groupNameToSplit = teachersTimeTable.get(String.valueOf(lectureNumber));
+                if (groupNameToSplit == null) {
+                    mandatoryConditionsMet = true;
+                    continue;
+                }
+                String [] splittedGroupNames = groupNameToSplit.split(":");
+                String groupName = splittedGroupNames[1].trim();
                 System.out.println("Group name: " + groupName);
                 Group groupToCheck = studentsMockDataFiller.getGroups().get(groupName);
                 System.out.println("groupToCheck: " + groupToCheck);
                 boolean contains = true;
-                if (StringUtils.equals(groupName, lectureNumber + ": -----")) {
+                if (StringUtils.equals(groupName, "-----")) {
                     contains = false;
                 }
 
