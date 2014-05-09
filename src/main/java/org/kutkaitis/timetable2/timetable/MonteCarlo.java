@@ -19,8 +19,10 @@ package org.kutkaitis.timetable2.timetable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -54,14 +56,22 @@ public class MonteCarlo extends OptimizationAlgorithm {
     private void optimizeMondayTimeTableForIIIAndIVGymnasium() {
         mondayTimeTable = new LinkedHashMap<>();
         LinkedHashMap<String, String> teachersTimeTable;
+        HashMap<String, Teacher> teachersMapForDeletion = new HashMap<>();
+        for(Map.HashMap entry : studentsMockDataFiller.getTeachers().entrySet())
+  if(!teachersMapForDeletion.containsKey(entry.getKey()) {
+      teachersMapForDeletion.put(entry.getKey(), entry.getValue());
+  }
+    
 
         for (int lectureNumber = 1; lectureNumber <= properties.getHoursPerDay(); lectureNumber++) {
             System.out.println("--------------Lecture-----------------");
             for (String teacherName : teachersListOfIIIAndIVForOptm) {
                 System.out.println("--------------Teacher-----------------");
                 teachersTimeTable = getTeachersTimeTable(teacherName);
-                Teacher teacher = studentsMockDataFiller.getTeachers().get(teacherName);
+                Teacher teacher = teachersMapForDeletion.get(teacherName);
                 List<Group> teachersGroups = teacher.getTeachersGroups();
+                System.out.println("teachersGroups in the beginning: " + teachersGroups);
+                System.out.println("teachersGroups in studentsMockDataFiller in begin: " + studentsMockDataFiller.getTeachers().get(teacherName).getTeachersGroups());
 
                 int teachersGroupsTotal = teachersGroups.size();
                 System.out.println("teachersGroupsTotal: " + teachersGroupsTotal);
@@ -81,6 +91,11 @@ public class MonteCarlo extends OptimizationAlgorithm {
                 }
                 
                 Group group = getRandomGroup(teachersGroups, teachersGroupsTotal);
+                
+                while (group == null || group.isIiGymnasiumGroup() || group.isiGymnasiumGroup()) {
+                    group = getRandomGroup(teachersGroups, teachersGroupsTotal);
+                }
+                
                 boolean isGroupAllowedToAdd = isMandatoryConditionsMet(teacher, teachersGroups, group, lectureNumber);
                 System.out.println("Grupe idejimui: " + group);
                 System.out.println("isGroupAllowedToAdd: " + isGroupAllowedToAdd);
@@ -148,13 +163,10 @@ public class MonteCarlo extends OptimizationAlgorithm {
         //  System.out.println("groups size: " + teachersGroupsTotal);
         int randomNumber = generateRandomInteger(teachersGroupsTotal);
         Group group = groups.get(randomNumber);
+//        System.out.println("Group in random group: " + group);
         if (group != null)
-        System.out.println("Group in random group: " + group.getGroupName());
+        System.out.println("Group name in random group: " + group.getGroupName());
 
-        if (group == null || group.isIiGymnasiumGroup() || group.isiGymnasiumGroup()) {
-            this.getRandomGroup(groups, teachersGroupsTotal);
-            group = null;
-        }
         return group;
     }
 
@@ -178,10 +190,12 @@ public class MonteCarlo extends OptimizationAlgorithm {
                 String groupName = teachersTimeTable.get(String.valueOf(lectureNumber));
                 System.out.println("Group name: " + groupName);
                 Group groupToCheck = studentsMockDataFiller.getGroups().get(groupName);
+                System.out.println("groupToCheck: " + groupToCheck);
                 boolean contains = true;
-                if (!StringUtils.equals(groupName, "e")) {
+                if (StringUtils.equals(groupName, lectureNumber + ": -----")) {
                     contains = false;
                 }
+
                 if (groupToCheck != null) {
                     System.out.println("Group to check: " + groupToCheck.getGroupName());
                     contains = CollectionUtils.containsAny(groupStudents, groupToCheck.getStudents());
