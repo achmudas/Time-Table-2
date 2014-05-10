@@ -113,19 +113,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
             teacherToBeAddForDel.setName(teacher.getName());
             teacherToBeAddForDel.setTeacherDisciplines(teacher.getTeacherDisciplines());
             teacherToBeAddForDel.setTeacherInIIIAndIVGymnasiumClasses(teacher.isTeacherInIIIAndIVGymnasiumClasses());
-            teacherToBeAddForDel.setTeachersGroups(new ArrayList<Group>());
-            for (Group group : teacher.getTeachersGroups()) {
-                Group groupForDel = new Group();
-                groupForDel.setDiscipline(group.getDiscipline());
-                groupForDel.setGroupName(group.getGroupName());
-                groupForDel.setIiGymnasiumGroup(group.isIiGymnasiumGroup());
-                groupForDel.setIiiGymnasiumGroup(group.isIiiGymnasiumGroup());
-                groupForDel.setIvGymnasiumGroup(group.isIvGymnasiumGroup());
-                groupForDel.setiGymnasiumGroup(group.isiGymnasiumGroup());
-                groupForDel.setStudents(group.getStudents());
-                groupForDel.setTeacher(teacherToBeAddForDel);
-                teacherToBeAddForDel.getTeachersGroups().add(groupForDel);
-            }
+            teacherToBeAddForDel.setTeachersGroups(teacher.getTeachersGroups());
             teachersMapForDeletion.put(teacherToBeAddForDel.getName(), teacherToBeAddForDel);
         }
         return teachersMapForDeletion;
