@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Startup;
 import org.apache.commons.lang3.StringUtils;
+import org.kutkaitis.timetable2.domain.ClassRoom;
 import org.kutkaitis.timetable2.domain.Discipline;
 import org.kutkaitis.timetable2.domain.Group;
 import org.kutkaitis.timetable2.domain.Student;
@@ -56,7 +57,54 @@ public class StudentsMockDataFiller {
 
         List<Student> studentsIList1 = createStudentsList("StudentI_", 1, 30, choosenDisciplinesI_II);
         List<Student> studentsIList2 = createStudentsList("StudentI_", 31, 60, choosenDisciplinesI_II);
-
+        
+        ClassRoom classRoom1IAndII = new ClassRoom();
+        classRoom1IAndII.setRoomNumber("100");
+        classRoom1IAndII.setSpecializedRoom(false);
+        
+        ClassRoom classRoom2IAndII = new ClassRoom();
+        classRoom2IAndII.setRoomNumber("101");
+        classRoom2IAndII.setSpecializedRoom(false);
+        ClassRoom classRoom3IAndII = new ClassRoom();
+        classRoom3IAndII.setRoomNumber("102");
+        classRoom3IAndII.setSpecializedRoom(false);
+        ClassRoom classRoom4IAndII = new ClassRoom();
+        classRoom4IAndII.setRoomNumber("103");
+        classRoom4IAndII.setSpecializedRoom(false);
+        
+        ClassRoom classRoom5IIIAndIV = new ClassRoom();
+        classRoom5IIIAndIV.setRoomNumber("104");
+        classRoom5IIIAndIV.setSpecializedRoom(false);
+        ClassRoom classRoom6IIIAndIV = new ClassRoom();
+        classRoom6IIIAndIV.setRoomNumber("105");
+        classRoom6IIIAndIV.setSpecializedRoom(false);
+        ClassRoom classRoom7IIIAndIV = new ClassRoom();
+        classRoom7IIIAndIV.setRoomNumber("106");
+        classRoom7IIIAndIV.setSpecializedRoom(false);
+        
+        ClassRoom classRoom8IIIAndIV = new ClassRoom();
+        classRoom8IIIAndIV.setRoomNumber("107");
+        classRoom8IIIAndIV.setSpecializedRoom(false);
+        ClassRoom classRoom9IIIAndIV = new ClassRoom();
+        classRoom9IIIAndIV.setRoomNumber("108");
+        classRoom9IIIAndIV.setSpecializedRoom(false);
+        ClassRoom classRoom10IIIAndIV = new ClassRoom();
+        classRoom10IIIAndIV.setRoomNumber("109");
+        classRoom10IIIAndIV.setSpecializedRoom(false);
+        ClassRoom classRoom11IIIAndIV = new ClassRoom();
+        classRoom11IIIAndIV.setRoomNumber("120");
+        classRoom11IIIAndIV.setSpecializedRoom(false);
+        ClassRoom classRoom12FzIAndII = new ClassRoom();
+        classRoom12FzIAndII.setRoomNumber("200");
+        classRoom12FzIAndII.setSpecializedRoom(true);
+        
+        ClassRoom classRoom13FzIIIAndIV = new ClassRoom();
+        classRoom13FzIIIAndIV.setRoomNumber("201");
+        classRoom13FzIIIAndIV.setSpecializedRoom(true);
+        ClassRoom classRoom14FzIIIAndIV = new ClassRoom();
+        classRoom14FzIIIAndIV.setRoomNumber("202");
+        classRoom14FzIIIAndIV.setSpecializedRoom(true);
+        
         // 1 gymnasium groups
         createGroup(studentsIList1, ltI_II, ltTeacherI_II, "LtI1");
         createGroup(studentsIList2, ltI_II, ltTeacherI_II, "LtI2");

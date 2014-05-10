@@ -65,8 +65,6 @@ public class MonteCarlo extends OptimizationAlgorithm {
                 teachersTimeTable = getTeachersTimeTable(teacherName);
                 Teacher teacher = teachersMapForDeletion.get(teacherName);
                 List<Group> teachersGroups = teacher.getTeachersGroups();
-                System.out.println("teachersGroups in the beginning: " + teachersGroups);
-                System.out.println("teachersGroups in studentsMockDataFiller in begin: " + studentsMockDataFiller.getTeachers().get(teacherName).getTeachersGroups());
 
                 int teachersGroupsTotal = teachersGroups.size();
                 System.out.println("teachersGroupsTotal: " + teachersGroupsTotal);
@@ -180,7 +178,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
 
     // TODO
     // 2. check, that classroom is empty
-    private boolean isMandatoryConditionsMet(Teacher teacher, List<Group> teachersGroups, Group group, int lectureNumber) {
+    private boolean isStudentInOneLectureAtTheTime(Teacher teacher, List<Group> teachersGroups, Group group, int lectureNumber) {
         boolean mandatoryConditionsMet = true;
         if (group != null) {
             System.out.println("Grupe idejimui: " + group.getGroupName());
@@ -227,4 +225,15 @@ public class MonteCarlo extends OptimizationAlgorithm {
         return mandatoryConditionsMet;
     }
 
+    private boolean isMandatoryConditionsMet(Teacher teacher, List<Group> teachersGroups, Group group, int lectureNumber) {
+        boolean mandatoryConditionsMet = false;
+        boolean studentInOneLectureAtTheTime = isStudentInOneLectureAtTheTime(teacher, teachersGroups, group, lectureNumber);
+        boolean oneGroupInOneClassroom = isOneGroupInOneClassroom();
+        if (studentInOneLectureAtTheTime && oneGroupInOneClassroom) { mandatoryConditionsMet = true; }
+        return mandatoryConditionsMet;
+    }
+
+    private boolean isOneGroupInOneClassroom() {
+        return true;
+    }
 }

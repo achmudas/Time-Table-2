@@ -16,7 +16,16 @@ public class Group {
     private boolean iiGymnasiumGroup;
     private boolean iiiGymnasiumGroup;
     private boolean ivGymnasiumGroup;
+    private ClassRoom classRoom;
 
+    public ClassRoom getClassRoom() {
+        return classRoom;
+    }
+
+    public void setClassRoom(ClassRoom classRoom) {
+        this.classRoom = classRoom;
+    }
+    
     public String getGroupName() {
         return groupName;
     }
