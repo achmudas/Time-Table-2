@@ -29,6 +29,7 @@ import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.kutkaitis.timetable2.domain.ClassRoom;
 import org.kutkaitis.timetable2.domain.Group;
 import org.kutkaitis.timetable2.domain.Student;
 import org.kutkaitis.timetable2.domain.Teacher;
@@ -57,7 +58,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
         mondayTimeTable = new LinkedHashMap<>();
         LinkedHashMap<String, String> teachersTimeTable;
         HashMap<String, Teacher> teachersMapForDeletion = copyTeacherForDeletion();
-        
+
         for (int lectureNumber = 1; lectureNumber <= properties.getHoursPerDay(); lectureNumber++) {
             System.out.println("--------------Lecture-----------------");
             for (String teacherName : teachersListOfIIIAndIVForOptm) {
@@ -82,13 +83,13 @@ public class MonteCarlo extends OptimizationAlgorithm {
                     teachersTimeTable.put(String.valueOf(lectureNumber), lectureNumber + ": -----");//Add group, because all the groups for teacher was added already
                     continue;
                 }
-                
+
                 Group group = getRandomGroup(teachersGroups, teachersGroupsTotal);
-                
+
                 while (group == null || group.isIiGymnasiumGroup() || group.isiGymnasiumGroup()) {
                     group = getRandomGroup(teachersGroups, teachersGroupsTotal);
                 }
-                
+
                 boolean isGroupAllowedToAdd = isMandatoryConditionsMet(teacher, teachersGroups, group, lectureNumber);
                 System.out.println("Grupe idejimui: " + group);
                 System.out.println("isGroupAllowedToAdd: " + isGroupAllowedToAdd);
@@ -128,7 +129,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
 
     private void addGroupToTeachersTimeTable(Group group, LinkedHashMap<String, String> teachersTimeTable, int lectureNumber, List<Group> teachersGroups) {
         if (group != null) {
-            teachersTimeTable.put(String.valueOf(lectureNumber), lectureNumber + ": " + group.getGroupName());
+            teachersTimeTable.put(String.valueOf(lectureNumber), lectureNumber + ": " + group.getGroupName() + ": " + group.getClassRoom().getRoomNumber());
             teachersGroups.remove(group);
         }
     }
@@ -170,14 +171,13 @@ public class MonteCarlo extends OptimizationAlgorithm {
         int randomNumber = generateRandomInteger(teachersGroupsTotal);
         Group group = groups.get(randomNumber);
 //        System.out.println("Group in random group: " + group);
-        if (group != null)
-        System.out.println("Group name in random group: " + group.getGroupName());
+        if (group != null) {
+            System.out.println("Group name in random group: " + group.getGroupName());
+        }
 
         return group;
     }
 
-    // TODO
-    // 2. check, that classroom is empty
     private boolean isStudentInOneLectureAtTheTime(Teacher teacher, List<Group> teachersGroups, Group group, int lectureNumber) {
         boolean mandatoryConditionsMet = true;
         if (group != null) {
@@ -197,7 +197,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
                     mandatoryConditionsMet = true;
                     continue;
                 }
-                String [] splittedGroupNames = groupNameToSplit.split(":");
+                String[] splittedGroupNames = groupNameToSplit.split(":");
                 String groupName = splittedGroupNames[1].trim();
                 System.out.println("Group name: " + groupName);
                 Group groupToCheck = studentsMockDataFiller.getGroups().get(groupName);
@@ -228,12 +228,55 @@ public class MonteCarlo extends OptimizationAlgorithm {
     private boolean isMandatoryConditionsMet(Teacher teacher, List<Group> teachersGroups, Group group, int lectureNumber) {
         boolean mandatoryConditionsMet = false;
         boolean studentInOneLectureAtTheTime = isStudentInOneLectureAtTheTime(teacher, teachersGroups, group, lectureNumber);
-        boolean oneGroupInOneClassroom = isOneGroupInOneClassroom();
-        if (studentInOneLectureAtTheTime && oneGroupInOneClassroom) { mandatoryConditionsMet = true; }
+        boolean oneGroupInOneClassroom = isOneGroupInOneClassroom(group, lectureNumber); // TODO probably need to refactor and use one method fur this stuff
+        if (studentInOneLectureAtTheTime && oneGroupInOneClassroom) {
+            mandatoryConditionsMet = true;
+        }
+        System.out.println("Mandatory conditions met: " + mandatoryConditionsMet);
         return mandatoryConditionsMet;
     }
 
-    private boolean isOneGroupInOneClassroom() {
-        return true;
+    private boolean isOneGroupInOneClassroom(Group group, int lectureNumber) {
+        boolean oneLectureInOneRoom = true;
+        if (group != null) {
+            ClassRoom groupsRoom = group.getClassRoom();
+            String classRoomNumber = groupsRoom.getRoomNumber();
+            System.out.println("Group to add: " + group.getGroupName());
+            Collection<LinkedHashMap> teachersTimeTables = mondayTimeTable.values();
+            for (LinkedHashMap<String, String> teachersTimeTable : teachersTimeTables) {
+                if (teachersTimeTable.isEmpty()) {
+                    oneLectureInOneRoom = true;
+                    continue;
+                }
+                String groupNameToSplit = teachersTimeTable.get(String.valueOf(lectureNumber));
+                if (groupNameToSplit == null) {
+                    oneLectureInOneRoom = true;
+                    continue;
+                }
+                String[] splittedGroupNames = groupNameToSplit.split(":");
+                String groupName = splittedGroupNames[1].trim();
+                Group groupToCheck = studentsMockDataFiller.getGroups().get(groupName);
+                boolean roomBusy = true;
+                if (StringUtils.equals(groupName, "-----")) {
+                    roomBusy = false;
+                }
+
+                if (groupToCheck != null) {
+                    System.out.println("Group to check: " + groupToCheck.getGroupName());
+                    roomBusy = StringUtils.equals(classRoomNumber, groupToCheck.getClassRoom().getRoomNumber());
+                    System.out.println("freeRoom: " + roomBusy);
+                }
+                if (roomBusy == false) {
+                    oneLectureInOneRoom = true;
+                } else {
+                    oneLectureInOneRoom = false;
+                    return oneLectureInOneRoom;
+                }
+            }
+        } else {
+            oneLectureInOneRoom = false;
+
+        }
+        return oneLectureInOneRoom;
     }
 }
