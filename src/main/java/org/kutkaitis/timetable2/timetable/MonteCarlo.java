@@ -68,12 +68,13 @@ public class MonteCarlo extends OptimizationAlgorithm {
 
         LinkedHashMap<String, String> teachersTimeTable;
         HashMap<String, Teacher> teachersMapForDeletion = copyTeacherForDeletion();
-        for (LinkedHashMap dayTimeTable : daysTimeTablesForItr) {
-            System.out.println("-----------------Day-------------");
-            for (int lectureNumber = 1; lectureNumber <= properties.getHoursPerDay(); lectureNumber++) {
-                System.out.println("--------------Lecture-----------------");
-                for (String teacherName : teachersListOfIIIAndIVForOptm) {
-                    System.out.println("--------------Teacher-----------------");
+
+        for (int lectureNumber = 1; lectureNumber <= properties.getHoursPerDay(); lectureNumber++) {
+            System.out.println("--------------Lecture-----------------");
+            for (String teacherName : teachersListOfIIIAndIVForOptm) {
+                System.out.println("--------------Teacher-----------------");
+                for (LinkedHashMap dayTimeTable : daysTimeTablesForItr) {
+                    System.out.println("-----------------Day-------------");
                     teachersTimeTable = getTeachersTimeTable(teacherName, dayTimeTable);
                     Teacher teacher = teachersMapForDeletion.get(teacherName);
                     List<Group> teachersGroups = teacher.getTeachersGroups();
