@@ -265,7 +265,10 @@ public class StudentsMockDataFiller {
         group.setClassRoom(classRoom);
         decideGymnasiumGroup(name, group);
         groups.put(name, group);
-        teacher.getTeachersGroups().add(group);
+        int disciplineHoursPerWeek = Integer.parseInt(discipline.getHoursPerWeek());
+        for (int i = 0; i < disciplineHoursPerWeek; i++) {
+            teacher.getTeachersGroups().add(group);
+        }
         return group;
     }
 
