@@ -96,12 +96,29 @@
 
                         </p:tabView>
                     </h:panelGrid>
-                    
-                    <h:panelGrid columns="2" cellpadding="10" >
-                        <h:commandButton value="Recreate" action="/initialisation/initialisation" actionListener="#{clearBean.clearTimeTable}"/> 
-                        <h:commandButton value="Show optimization results" actionListener="#{optimizationResultsBean.showResults}"/>
-                        <p:commandButton value="View" icon="ui-icon-extlink" actionListener="#{optimizationResultsBean.showResults}" />
-                    </h:panelGrid>
+
+                    <p:dialog id="optimizationResults" header="Optimization results" widgetVar="optmRes" modal="true" height="320" width="480" appendToBody="false">
+                        <h:panelGrid columns="2" cellpadding="10" >
+                            <p:outputLabel value="Numbers of performed iterations: " />   
+                            <p:outputLabel value="#{propertiesForOptimizationBean.optimisationIterations}" />   
+
+                            <p:outputLabel value="Number of lectures per day: " /> 
+                            <p:outputLabel value="#{propertiesForOptimizationBean.hoursPerDay}" /> 
+
+                            <p:outputLabel value="Optimization method used: " /> 
+                            <p:outputLabel value="#{propertiesForOptimizationBean.optimisationMethod}" /> 
+
+                            <p:outputLabel value="Time of optimization: " /> 
+                            <p:outputLabel value="#{optimizationResultsBean.duration}" /> 
+
+                            <p:outputLabel value="Total penalty points: " /> 
+                            <p:outputLabel value="#{optimizationResultsBean.totalPenaltyPoints}" /> 
+                        </h:panelGrid>
+
+                    </p:dialog>
+
+                    <p:commandButton id="showResultsButton" value="Show optimization results" onclick="optmRes.show();" type="button" process="@this" update="@none" />
+                    <p:commandButton id="restart" value="Restart optimization" />
 
                 </h:form>
             </ui:define>
