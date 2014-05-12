@@ -27,6 +27,7 @@ import java.util.Random;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.kutkaitis.timetable2.domain.ClassRoom;
@@ -41,6 +42,7 @@ import org.kutkaitis.timetable2.mock.StudentsMockDataFiller;
  */
 @ManagedBean(name = "monteCarlo")
 @SessionScoped
+@Singleton
 public class MonteCarlo extends OptimizationAlgorithm {
 
     @Inject

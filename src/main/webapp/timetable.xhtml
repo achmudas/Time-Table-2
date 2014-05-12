@@ -96,6 +96,11 @@
 
                         </p:tabView>
                     </h:panelGrid>
+                    
+                    <h:panelGrid columns="2" cellpadding="10" >
+                        <h:commandButton value="Recreate" action="/initialisation/initialisation" actionListener="#{clearBean.clearTimeTable}"/> 
+                        <h:commandButton value="Show optimisation results" actionListener="#{optimizationResultsBean.viewOptimizationResults}"/>
+                    </h:panelGrid>
 
                 </h:form>
             </ui:define>
