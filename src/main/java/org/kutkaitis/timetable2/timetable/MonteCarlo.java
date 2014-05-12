@@ -35,6 +35,7 @@ import org.kutkaitis.timetable2.domain.Group;
 import org.kutkaitis.timetable2.domain.Student;
 import org.kutkaitis.timetable2.domain.Teacher;
 import org.kutkaitis.timetable2.mock.StudentsMockDataFiller;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -42,7 +43,6 @@ import org.kutkaitis.timetable2.mock.StudentsMockDataFiller;
  */
 @ManagedBean(name = "monteCarlo")
 @SessionScoped
-@Singleton
 public class MonteCarlo extends OptimizationAlgorithm {
 
     @Inject
@@ -118,6 +118,10 @@ public class MonteCarlo extends OptimizationAlgorithm {
                 }
             }
         }
+        
+        System.out.println("Checking request context from Monte Carlo: " + RequestContext.getCurrentInstance().toString());
+        RequestContext.getCurrentInstance().openDialog("showResults");
+
     }
 
     private List<LinkedHashMap> addDaysTimeTablesForIteration() {

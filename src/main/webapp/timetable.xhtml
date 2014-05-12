@@ -99,7 +99,8 @@
                     
                     <h:panelGrid columns="2" cellpadding="10" >
                         <h:commandButton value="Recreate" action="/initialisation/initialisation" actionListener="#{clearBean.clearTimeTable}"/> 
-                        <h:commandButton value="Show optimisation results" actionListener="#{optimizationResultsBean.viewOptimizationResults}"/>
+                        <h:commandButton value="Show optimization results" actionListener="#{optimizationResultsBean.showResults}"/>
+                        <p:commandButton value="View" icon="ui-icon-extlink" actionListener="#{optimizationResultsBean.showResults}" />
                     </h:panelGrid>
 
                 </h:form>

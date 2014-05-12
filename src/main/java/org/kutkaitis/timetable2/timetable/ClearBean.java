@@ -35,6 +35,8 @@ public class ClearBean {
     public void clearTimeTable() {
         LinkedHashMap mondayTm = monteCarlo.getOptimizedTimeTableForTeacherMonday();
         mondayTm = null;
+                monteCarlo.getTeachersListOfIIIAndIVForOptm(); // just for creation
+
 //        monteCarlo.getOptimizedTimeTableForTeacherTuesday()= null;
 //        monteCarlo.getOptimizedTimeTableForTeacherWednesday() = null;
 //        monteCarlo.getOptimizedTimeTableForTeacherThursday() = null;

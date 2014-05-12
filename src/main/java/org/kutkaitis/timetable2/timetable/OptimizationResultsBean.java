@@ -14,13 +14,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.kutkaitis.timetable2.timetable;
+
+import java.util.HashMap;
+import java.util.Map;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.inject.Inject;
+import org.primefaces.context.RequestContext;
 
 /**
  *
  * @author MkA
  */
+@ManagedBean(name = "optimizationResultsBean")
+@SessionScoped
 public class OptimizationResultsBean {
+
+    @Inject
+    PropertiesForOptimizationBean properties;
     
+    private String duration;
+    private String totalPenaltyPoints;
+
+    public String getDuration() {
+        return "0";
+    }
+
+    public String getTotalPenaltyPoints() {
+        return "0";
+    }
+    
+    public void showResults() {
+        System.out.println("Kviecia");
+        System.out.println("Checking request context from optimization results: " + RequestContext.getCurrentInstance().toString());
+        RequestContext.getCurrentInstance().openDialog("showResults");
+
+    }
 }
