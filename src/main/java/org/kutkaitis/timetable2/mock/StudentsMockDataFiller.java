@@ -25,6 +25,7 @@ public class StudentsMockDataFiller {
     private HashMap<String, Group> groups = new HashMap<String, Group>();
     private HashMap<String, Teacher> teachers = new HashMap<String, Teacher>();
     private HashMap<String, Teacher> teachersFromIIIAndIV = new HashMap<String, Teacher>();
+    private List<Student> allStudents = new ArrayList<>();
 
     public HashMap<String, Group> getGroups() {
         return groups;
@@ -38,6 +39,10 @@ public class StudentsMockDataFiller {
         return teachersFromIIIAndIV;
     }
 
+    public List<Student> getAllStudents() {
+        return allStudents;
+    }
+    
     // Creates mock data at the start of application
     @PostConstruct
     public void init() {
@@ -311,9 +316,10 @@ public class StudentsMockDataFiller {
 
             student.setChosenDisciplines(choosenDisciplines);
             studentsList.add(student);
+            allStudents.add(student);
 
         }
-
+        
         return studentsList;
     }
 

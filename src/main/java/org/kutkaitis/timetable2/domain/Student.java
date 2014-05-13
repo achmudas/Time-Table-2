@@ -29,5 +29,9 @@ public class Student {
         this.chosenDisciplines = chosenDisciplines;
     }
     
+    @Override
+    public String toString() {
+        return this.getName();
+    }
     
 }
