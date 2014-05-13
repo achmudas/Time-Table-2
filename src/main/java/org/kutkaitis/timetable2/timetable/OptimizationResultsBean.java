@@ -28,6 +28,8 @@ import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import org.apache.commons.lang3.StringUtils;
+import org.kutkaitis.timetable2.mock.StudentsMockDataFiller;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -42,9 +44,13 @@ public class OptimizationResultsBean {
     @Inject
     PropertiesForOptimizationBean properties;
 
+    @Inject
+    StudentsMockDataFiller studentsMockData;
+
     private String duration;
     private String totalPenaltyPoints;
     private List<LinkedHashMap> allDaysTeacherTimeTable;
+    private static final String EMPTY_GROUP = "-----";
 
     public String getDuration() {
         return "0";
@@ -54,28 +60,64 @@ public class OptimizationResultsBean {
         int pointsTeacherLectureWindow = calculateTeachersLectureWindowForIIIAndIV();
         return String.valueOf(pointsTeacherLectureWindow);
     }
-    
+
     public void calculatePenaltyPoints() {
         calculateTeachersLectureWindowForIIIAndIV();
-        
+
     }
 
     private int calculateTeachersLectureWindowForIIIAndIV() {
+        int penaltyPoints = 0;
         List<LinkedHashMap> teachersAllDay = getAllDaysTeacherTimeTable();
-        int points = 0;
-        
-             for (LinkedHashMap<String, LinkedHashMap> daysTimeTable : teachersAllDay) {
-                 for (LinkedHashMap teachersDayLectures : daysTimeTable) {
-                     
-                 }
-                  teachersNames = daysTimeTable.keySet();
-//                 for(String teacherName : teachersNames) {
-//                     
-//                 }
-             }
-       
-        return points;
-        
+
+        for (LinkedHashMap<String, LinkedHashMap> daysTimeTable : teachersAllDay) {
+            Collection<String> teacherNames = daysTimeTable.keySet();
+
+            for (String teacherName : teacherNames) {
+                LinkedHashMap<String, String> teachersTimeTableForTheDay = daysTimeTable.get(teacherName);
+                Collection<String> lectureNumbers = teachersTimeTableForTheDay.keySet();
+//                System.out.println("Lecture number size: " + lectureNumbers.size());
+                int lectureNumbersSize = lectureNumbers.size();
+
+                for (String lectureNumber : lectureNumbers) {
+                    String groupNameToSplit = teachersTimeTableForTheDay.get(lectureNumber);
+                    String[] splittedGroupNames = groupNameToSplit.split(":");
+                    String groupName = splittedGroupNames[1].trim();
+
+                    if (StringUtils.equals(groupName, EMPTY_GROUP)) {
+                        if (studentsMockData.getTeachersFromIIIAndIV().containsKey(teacherName)) {
+                            boolean isNotLastLectures = true;
+                            for (int lectNum = Integer.valueOf(lectureNumber); lectNum <= lectureNumbersSize; lectNum++) {
+                                System.out.println("lectNum: " + lectNum);
+                         
+                                String grpNam = teachersTimeTableForTheDay.get(String.valueOf(lectNum)).split(":")[1].trim();
+                                System.out.println("grpName: " + grpNam);
+                                
+                                if (StringUtils.equals(grpNam, EMPTY_GROUP)) {
+                                    isNotLastLectures = false;
+                                } else {
+                                    isNotLastLectures = true;
+                                    break;
+                                }
+                            }
+                            
+                            System.out.println("isNotLastLectures: " + isNotLastLectures);
+                            if (isNotLastLectures) {
+                                penaltyPoints += PenaltyPoints.LECTURE_WINDOW_FOR_TEACHER_III_IV.penaltyPoints();
+                                 
+                            }
+
+//                            System.out.println("Penalty points: " + penaltyPoints);
+                        }
+                    }
+
+                }
+
+            }
+        }
+
+        return penaltyPoints;
+
     }
 
     public List<LinkedHashMap> getAllDaysTeacherTimeTable() {

@@ -78,11 +78,11 @@ public class MonteCarlo extends OptimizationAlgorithm {
         HashMap<String, Teacher> teachersMapForDeletion = copyTeacherForDeletion();
 
         for (int lectureNumber = 1; lectureNumber <= properties.getHoursPerDay(); lectureNumber++) {
-            System.out.println("--------------Lecture-----------------");
+//            System.out.println("--------------Lecture-----------------");
             for (String teacherName : teachersListOfIIIAndIVForOptm) {
-                System.out.println("--------------Teacher-----------------");
+//                System.out.println("--------------Teacher-----------------");
                 for (LinkedHashMap dayTimeTable : daysTimeTablesForItr) {
-                    System.out.println("-----------------Day-------------");
+//                    System.out.println("-----------------Day-------------");
                     teachersTimeTable = getTeachersTimeTable(teacherName, dayTimeTable);
                     Teacher teacher = teachersMapForDeletion.get(teacherName);
                     List<Group> teachersGroups = teacher.getTeachersGroups();
@@ -124,8 +124,6 @@ public class MonteCarlo extends OptimizationAlgorithm {
                 }
             }
         }
-        System.out.println("Monday time table: " + mondayTimeTable);
-        System.out.println("Optimization results bean: " + optimizationResults);
         optimizationResults.setAllDaysTeacherTimeTable(daysTimeTablesForItr);
 
     }
@@ -205,7 +203,6 @@ public class MonteCarlo extends OptimizationAlgorithm {
     }
     
     public List<LinkedHashMap> getOptimizedTimeTableForTeachersForAllWeek() {
-        System.out.println("Optimizded time table list in MC: " + addDaysTimeTablesForIteration());
         return addDaysTimeTablesForIteration();
     }
 
