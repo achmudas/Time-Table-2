@@ -1,6 +1,9 @@
 package org.kutkaitis.timetable2.domain;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.kutkaitis.timetable2.timetable.Days;
 
 /**
  *
@@ -12,7 +15,25 @@ public class Teacher {
     private List<Discipline> teacherDisciplines;
     private List<Group> teachersGroups;
     private boolean teacherInIIIAndIVGymnasiumClasses;
+    private List<Days> freeDays;
+    private Map<Days, String> freeLectures;
 
+    public List<Days> getFreeDays() {
+        return freeDays;
+    }
+
+    public void setFreeDays(List<Days> freeDays) {
+        this.freeDays = freeDays;
+    }
+
+    public Map<Days, String> getFreeLectures() {
+        return freeLectures;
+    }
+
+    public void setFreeLectures(Map<Days, String> freeLectures) {
+        this.freeLectures = freeLectures;
+    }
+    
     public List<Group> getTeachersGroups() {
         return teachersGroups;
     }

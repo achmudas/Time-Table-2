@@ -16,6 +16,7 @@
  */
 package org.kutkaitis.timetable2.timetable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -57,13 +58,140 @@ public class OptimizationResultsBean {
     }
 
     public String getTotalPenaltyPoints() {
-        int pointsTeacherLectureWindow = calculateTeachersLectureWindowForIIIAndIV();
-        return String.valueOf(pointsTeacherLectureWindow);
+        int pointsTeacherLectureWindowIIIAndIV = calculateTeachersLectureWindowForIIIAndIV();
+        int pointsMoreThanSevenLectures = calculateMoreThanSevenLecturesPerDay();
+        // TODO penalty for group students list changes, currently not important, because groups are created programaticaly
+        int pointsForLectureDidactics = calculateLectureDidacticsPenalties();
+        int pointsForBadWorkingDayForTeacherIIIAndIV = calculateNotAppropriateWorkingDaysForTeacherIIIAndIV();
+        int pointsForBadWorkingHoursIIIAndIV = calculateBadWorkingHoursTeacherIIIAndIV();
+        return String.valueOf(pointsForBadWorkingHoursIIIAndIV);
     }
 
-    public void calculatePenaltyPoints() {
-        calculateTeachersLectureWindowForIIIAndIV();
+      private int calculateBadWorkingHoursTeacherIIIAndIV() {
+          int penaltyPoints = 0;
 
+        List<LinkedHashMap> teachersAllDay = getAllDaysTeacherTimeTable();
+
+        for (LinkedHashMap<String, LinkedHashMap> daysTimeTable : teachersAllDay) {
+            // Very dirty hack because of rush
+            int weekDayNumber = teachersAllDay.indexOf(daysTimeTable);
+            Days weekDay = decideWeekDay(weekDayNumber);
+            Collection<String> teacherNames = daysTimeTable.keySet();
+
+            for (String teacherName : teacherNames) {
+                LinkedHashMap<String, String> teachersTimeTableForTheDay = daysTimeTable.get(teacherName);
+                Collection<String> lectureNumbers = teachersTimeTableForTheDay.keySet();
+
+                for (String lectureNumber : lectureNumbers) {
+                    String groupNameToSplit = teachersTimeTableForTheDay.get(lectureNumber);
+                    String[] splittedGroupNames = groupNameToSplit.split(":");
+                    String groupName = splittedGroupNames[1].trim();
+
+                    if (!StringUtils.equals(groupName, EMPTY_GROUP)) {
+                        if (studentsMockData.getTeachersFromIIIAndIV().containsKey(teacherName)) {
+                           if (studentsMockData.getTeachers().get(teacherName).getFreeLectures() != null) {
+                               if (StringUtils.equals(studentsMockData.getTeachers().get(teacherName).getFreeLectures().get(weekDay), lectureNumber)) {
+                                   penaltyPoints += PenaltyPoints.BAD_WORKING_HOURS_FOR_TEACHER_III_IV.penaltyPoints();
+                               }
+                              
+                           }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        return penaltyPoints;
+
+      }
+    
+    private int calculateNotAppropriateWorkingDaysForTeacherIIIAndIV() {
+        int penaltyPoints = 0;
+
+        List<LinkedHashMap> teachersAllDay = getAllDaysTeacherTimeTable();
+
+        for (LinkedHashMap<String, LinkedHashMap> daysTimeTable : teachersAllDay) {
+            // Very dirty hack because of rush
+            int weekDayNumber = teachersAllDay.indexOf(daysTimeTable);
+            Days weekDay = decideWeekDay(weekDayNumber);
+            Collection<String> teacherNames = daysTimeTable.keySet();
+
+            teacher: for (String teacherName : teacherNames) {
+                LinkedHashMap<String, String> teachersTimeTableForTheDay = daysTimeTable.get(teacherName);
+                Collection<String> lectureNumbers = teachersTimeTableForTheDay.keySet();
+
+                for (String lectureNumber : lectureNumbers) {
+                    String groupNameToSplit = teachersTimeTableForTheDay.get(lectureNumber);
+                    String[] splittedGroupNames = groupNameToSplit.split(":");
+                    String groupName = splittedGroupNames[1].trim();
+
+                    if (!StringUtils.equals(groupName, EMPTY_GROUP)) {
+                        if (studentsMockData.getTeachersFromIIIAndIV().containsKey(teacherName)) {
+                           if (studentsMockData.getTeachers().get(teacherName).getFreeDays() != null && 
+                                   studentsMockData.getTeachers().get(teacherName).getFreeDays().contains(weekDay)) {
+                               
+                               penaltyPoints += PenaltyPoints.BAD_WORKING_DAYS_FOR_TEACHER_III_IV.penaltyPoints();
+                               continue teacher;
+                           }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        return penaltyPoints;
+
+    }
+
+    private int calculateLectureDidacticsPenalties() {
+        int penaltyPoints = 0;
+        List<LinkedHashMap> teachersAllDay = getAllDaysTeacherTimeTable();
+
+        for (LinkedHashMap<String, LinkedHashMap> daysTimeTable : teachersAllDay) {
+            Collection<String> teacherNames = daysTimeTable.keySet();
+
+            for (String teacherName : teacherNames) {
+                LinkedHashMap<String, String> teachersTimeTableForTheDay = daysTimeTable.get(teacherName);
+                Collection<String> lectureNumbers = teachersTimeTableForTheDay.keySet();
+                List<String> groupsListforCheck = new ArrayList<>();
+
+                for (String lectureNumber : lectureNumbers) {
+                    String groupName = teachersTimeTableForTheDay.get(lectureNumber).split(":")[1].trim();
+                    if (!StringUtils.equals(groupName, EMPTY_GROUP)) {
+                        if (groupsListforCheck.contains(groupName)) {
+                            penaltyPoints += PenaltyPoints.BAD_LECTURES_DIDACTICS.penaltyPoints();
+                        }
+                        groupsListforCheck.add(groupName);
+
+                    }
+
+                }
+            }
+        }
+        return penaltyPoints;
+    }
+
+    private int calculateMoreThanSevenLecturesPerDay() {
+        int penaltyPoints = 0;
+        List<LinkedHashMap> teachersAllDay = getAllDaysTeacherTimeTable();
+
+        days:
+        for (LinkedHashMap<String, LinkedHashMap> daysTimeTable : teachersAllDay) {
+            Collection<String> teacherNames = daysTimeTable.keySet();
+            for (String teacherName : teacherNames) {
+                LinkedHashMap<String, String> teachersTimeTableForTheDay = daysTimeTable.get(teacherName);
+                Collection<String> lectureNumbers = teachersTimeTableForTheDay.keySet();
+                int lectureNumbersSize = lectureNumbers.size();
+                if (lectureNumbersSize > 7) {
+                    penaltyPoints += PenaltyPoints.MORE_THAN_SEVEN_LECTURES_PER_DAY.penaltyPoints();
+                    continue days;
+                }
+            }
+        }
+
+        return penaltyPoints;
     }
 
     private int calculateTeachersLectureWindowForIIIAndIV() {
@@ -76,7 +204,6 @@ public class OptimizationResultsBean {
             for (String teacherName : teacherNames) {
                 LinkedHashMap<String, String> teachersTimeTableForTheDay = daysTimeTable.get(teacherName);
                 Collection<String> lectureNumbers = teachersTimeTableForTheDay.keySet();
-//                System.out.println("Lecture number size: " + lectureNumbers.size());
                 int lectureNumbersSize = lectureNumbers.size();
 
                 for (String lectureNumber : lectureNumbers) {
@@ -88,11 +215,9 @@ public class OptimizationResultsBean {
                         if (studentsMockData.getTeachersFromIIIAndIV().containsKey(teacherName)) {
                             boolean isNotLastLectures = true;
                             for (int lectNum = Integer.valueOf(lectureNumber); lectNum <= lectureNumbersSize; lectNum++) {
-                                System.out.println("lectNum: " + lectNum);
-                         
+
                                 String grpNam = teachersTimeTableForTheDay.get(String.valueOf(lectNum)).split(":")[1].trim();
-                                System.out.println("grpName: " + grpNam);
-                                
+
                                 if (StringUtils.equals(grpNam, EMPTY_GROUP)) {
                                     isNotLastLectures = false;
                                 } else {
@@ -100,14 +225,12 @@ public class OptimizationResultsBean {
                                     break;
                                 }
                             }
-                            
-                            System.out.println("isNotLastLectures: " + isNotLastLectures);
+
                             if (isNotLastLectures) {
                                 penaltyPoints += PenaltyPoints.LECTURE_WINDOW_FOR_TEACHER_III_IV.penaltyPoints();
-                                 
+
                             }
 
-//                            System.out.println("Penalty points: " + penaltyPoints);
                         }
                     }
 
@@ -128,4 +251,18 @@ public class OptimizationResultsBean {
         this.allDaysTeacherTimeTable = allDaysTeacherTimeTable;
     }
 
+    private Days decideWeekDay(int weekDayNumber) {
+        Days day = null;
+        switch(weekDayNumber) {
+            case 0: return Days.MONDAY;
+            case 1: return Days.TUESDAY;
+            case 2: return Days.WEDNESDAY;
+            case 3: return Days.THURSDAY;
+            case 4: return Days.FRIDAY;
+            default: return day;
+            
+        }
+    }
+
+  
 }

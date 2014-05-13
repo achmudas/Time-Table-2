@@ -3,6 +3,7 @@ package org.kutkaitis.timetable2.mock;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Startup;
@@ -12,6 +13,7 @@ import org.kutkaitis.timetable2.domain.Discipline;
 import org.kutkaitis.timetable2.domain.Group;
 import org.kutkaitis.timetable2.domain.Student;
 import org.kutkaitis.timetable2.domain.Teacher;
+import org.kutkaitis.timetable2.timetable.Days;
 
 /**
  *
@@ -50,10 +52,16 @@ public class StudentsMockDataFiller {
         choosenDisciplinesI_II.add(angI_II);
         choosenDisciplinesI_II.add(ltI_II);
 
-        Teacher mtTeacherI_II_IIIA_IVA = createTeacher("TeacherI&II&IIIA&IVAMt", true, mtI_II);
-        Teacher ltTeacherI_II = createTeacher("TeacherI&IILt", false, ltI_II);
-        Teacher fzTeacherI_II_IIIA_IVA = createTeacher("TeacherI&II&IIIA&IVAFz", true, fzI_II);
-        Teacher angTeacherI_II = createTeacher("TeacherI&IIAng", false, angI_II );
+        Teacher mtTeacherI_II_IIIA_IVA = createTeacher("TeacherI&II&IIIA&IVAMt", true, null, null, mtI_II);
+        
+        List<Days> freeDaysForLtTeach = new ArrayList<>();
+        freeDaysForLtTeach.add(Days.MONDAY);
+        Map<Days, String> freeHoursLtTeacher = new HashMap<>();
+        freeHoursLtTeacher.put(Days.TUESDAY, "2");
+        
+        Teacher ltTeacherI_II = createTeacher("TeacherI&IILt", false, freeDaysForLtTeach, freeHoursLtTeacher, ltI_II);
+        Teacher fzTeacherI_II_IIIA_IVA = createTeacher("TeacherI&II&IIIA&IVAFz", true, null, null, fzI_II);
+        Teacher angTeacherI_II = createTeacher("TeacherI&IIAng", false, freeDaysForLtTeach, freeHoursLtTeacher, angI_II );
 
         List<Student> studentsIList1 = createStudentsList("StudentI_", 1, 30, choosenDisciplinesI_II);
         List<Student> studentsIList2 = createStudentsList("StudentI_", 31, 60, choosenDisciplinesI_II);
@@ -143,11 +151,19 @@ public class StudentsMockDataFiller {
         Discipline fzIIIB_IVB = createDiscipline("Fizika B", "2");
         Discipline angIIIB_IVB = createDiscipline("Anglu kalba B", "3");
 
-        Teacher mtTeacherIIIB_IVB = createTeacher("TeacherIIIB&IVBMt", true, mtIIIB_IVB);
-        Teacher ltTeacherIIIA_IVA = createTeacher("TeacherIIIA&IVALt", true, ltIIIA_IVA);
-        Teacher ltTeacherIIIB_IVB = createTeacher("TeacherIIIB&IVBLt", true, ltIIIB_IVB);
-        Teacher fzTeacherIIIB_IVB = createTeacher("TeacherIIIB&IVBFz", true, fzIIIB_IVB);
-        Teacher angTeacherIIIA_IVA_IIIB_IVB = createTeacher("TeacherIIIA&IVA&IIIB&IVBAng", true, angIIIA_IVA, angIIIB_IVB);
+        List<Days> freeDaysForIIIAndIVTeacher = new ArrayList<>();
+        freeDaysForIIIAndIVTeacher.add(Days.FRIDAY);
+        Map<Days, String> freeHoursForIIIAndIVTeacher = new HashMap<>();
+        freeHoursForIIIAndIVTeacher.put(Days.THURSDAY, "3");
+        
+        Map<Days, String> freeHoursForIIIAndIVTeacher2 = new HashMap<>();
+        freeHoursForIIIAndIVTeacher2.put(Days.MONDAY, "3");
+        
+        Teacher mtTeacherIIIB_IVB = createTeacher("TeacherIIIB&IVBMt", true, freeDaysForIIIAndIVTeacher, null, mtIIIB_IVB);
+        Teacher ltTeacherIIIA_IVA = createTeacher("TeacherIIIA&IVALt", true, null, freeHoursForIIIAndIVTeacher, ltIIIA_IVA);
+        Teacher ltTeacherIIIB_IVB = createTeacher("TeacherIIIB&IVBLt", true, null, null, ltIIIB_IVB);
+        Teacher fzTeacherIIIB_IVB = createTeacher("TeacherIIIB&IVBFz", true, null, freeHoursForIIIAndIVTeacher, fzIIIB_IVB);
+        Teacher angTeacherIIIA_IVA_IIIB_IVB = createTeacher("TeacherIIIA&IVA&IIIB&IVBAng", true, null, freeHoursForIIIAndIVTeacher2, angIIIA_IVA, angIIIB_IVB);
 
         // 3 gymnasium groups
         List<Discipline> choosenDisciplinesIII_IV_hum = new ArrayList<>();
@@ -232,7 +248,7 @@ public class StudentsMockDataFiller {
         return discipline;
     }
 
-    private Teacher createTeacher(String name, boolean teachesInIIIAndIV, Discipline... discipline) {
+    private Teacher createTeacher(String name, boolean teachesInIIIAndIV, List<Days> freeDays, Map<Days, String> freeLectures, Discipline... discipline) {
         Teacher teacher = new Teacher();
         List<Discipline> disciplines = new ArrayList<>();
         for (Discipline disp : discipline) {
@@ -249,6 +265,8 @@ public class StudentsMockDataFiller {
 
         }
 
+        teacher.setFreeDays(freeDays);
+        teacher.setFreeLectures(freeLectures);
         teacher.setTeachersGroups(new ArrayList<Group>());
 //        System.out.println("Teachers from III and IV: " + teachersFromIIIAndIV.keySet());
         teachers.put(name, teacher);
