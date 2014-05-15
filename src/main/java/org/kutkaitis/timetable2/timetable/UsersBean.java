@@ -17,7 +17,9 @@
 package org.kutkaitis.timetable2.timetable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import javax.ejb.Singleton;
 import javax.faces.bean.ManagedBean;
@@ -37,6 +39,7 @@ public class UsersBean {
     StudentsMockDataFiller studentsMockDataFiller;
     private List<String> teachersNames;
     private List<String> teachersNamesFromIIIAndIV;
+    private List<String> teachersNamesFromIAndII;
 
     public UsersBean() {
     }
@@ -59,6 +62,16 @@ public class UsersBean {
 
     public void setTeachersNamesFromIIIAndIV(List<String> teachersNamesFromIIIAndIV) {
         this.teachersNamesFromIIIAndIV = teachersNamesFromIIIAndIV;
+    }
+    
+    public List<String> getTeachersNamesFromIAndII() {
+        teachersNamesFromIAndII = new ArrayList<>();
+        LinkedHashMap teachersCopy = new LinkedHashMap();
+        teachersCopy.putAll(studentsMockDataFiller.getTeachers());
+        Collection<String> teachersNames = teachersCopy.keySet();
+        teachersNames.removeAll(getTeachersNamesFromIIIAndIV());
+        teachersNamesFromIAndII.addAll(teachersNames);
+        return teachersNamesFromIAndII;
     }
     
 }

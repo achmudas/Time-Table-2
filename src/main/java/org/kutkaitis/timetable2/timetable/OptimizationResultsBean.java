@@ -66,8 +66,8 @@ public class OptimizationResultsBean {
         int pointsForLectureDidactics = calculateLectureDidacticsPenalties();
         int pointsForBadWorkingDayForTeacherIIIAndIV = calculateNotAppropriateWorkingDaysForTeacherIIIAndIV();
         int pointsForBadWorkingHoursIIIAndIV = calculateBadWorkingHoursTeacherIIIAndIV();
-        int pointsForLectureWindowInStudentsGroup = calculateLectureWindowsInStudentsGroup();
-        return String.valueOf(pointsForLectureWindowInStudentsGroup);
+//        int pointsForLectureWindowInStudentsGroup = calculateLectureWindowsInStudentsGroup(); // TODO calculate penalties for students windows
+        return String.valueOf(pointsForBadWorkingHoursIIIAndIV);
     }
     
     private List<LinkedHashMap> addStudentsTimeTablesToTheList(LinkedHashMap ... studentsTMForTheDay) {

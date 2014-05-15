@@ -16,12 +16,12 @@
                             <p:tab id="tab1" title="Monday">
                                 <h:panelGrid columns="2" cellpadding="10" >
                                     <h:panelGrid columns="1" cellpadding="10" border="1" >
-                                        <c:forEach items="#{monteCarlo.allTeachersListForOptm}" var="teacherName">
-                                            <h:outputLabel value="#{teacherName}" />
+                                        <c:forEach items="#{monteCarlo.studentsList}" var="student">
+                                            <h:outputLabel value="#{student}" />
                                         </c:forEach>
                                     </h:panelGrid>
                                     <h:panelGrid columns="#{propertiesForOptimizationBean.hoursPerDay}" cellpadding="10" border="1">
-                                        <c:forEach items="#{monteCarlo.optimizedTimeTableForTeacherMonday}" var="mondayTm">
+                                        <c:forEach items="#{monteCarlo.timeTableForStudentsMonday}" var="mondayTm">
                                             <c:forEach items="#{mondayTm.value}" var="group">
                                                 <h:outputLabel value="#{group.value}" />
                                             </c:forEach>
@@ -32,12 +32,12 @@
                             <p:tab id="tab2" title="Tuesday">
                                 <h:panelGrid columns="2" cellpadding="10" >
                                     <h:panelGrid columns="1" cellpadding="10" border="1" >
-                                        <c:forEach items="#{monteCarlo.allTeachersListForOptm}" var="teacherName">
-                                            <h:outputLabel value="#{teacherName}" />
+                                        <c:forEach items="#{monteCarlo.studentsList}" var="student">
+                                            <h:outputLabel value="#{student}" />
                                         </c:forEach>
                                     </h:panelGrid>
                                     <h:panelGrid columns="#{propertiesForOptimizationBean.hoursPerDay}" cellpadding="10" border="1">
-                                        <c:forEach items="#{monteCarlo.optimizedTimeTableForTeacherTuesday}" var="tuesdayTm">
+                                        <c:forEach items="#{monteCarlo.timeTableForStudentsTuesday}" var="tuesdayTm">
                                             <c:forEach items="#{tuesdayTm.value}" var="group">
                                                 <h:outputLabel value="#{group.value}" />
                                             </c:forEach>
@@ -48,12 +48,12 @@
                             <p:tab id="tab3" title="Wednesday">
                                 <h:panelGrid columns="2" cellpadding="10" >
                                     <h:panelGrid columns="1" cellpadding="10" border="1" >
-                                        <c:forEach items="#{monteCarlo.allTeachersListForOptm}" var="teacherName">
-                                            <h:outputLabel value="#{teacherName}" />
+                                        <c:forEach items="#{monteCarlo.studentsList}" var="student">
+                                            <h:outputLabel value="#{student}" />
                                         </c:forEach>
                                     </h:panelGrid>
                                     <h:panelGrid columns="#{propertiesForOptimizationBean.hoursPerDay}" cellpadding="10" border="1">
-                                        <c:forEach items="#{monteCarlo.optimizedTimeTableForTeacherWednesday}" var="wednesdayTm">
+                                        <c:forEach items="#{monteCarlo.timeTableForStudentsWednesday}" var="wednesdayTm">
                                             <c:forEach items="#{wednesdayTm.value}" var="group">
                                                 <h:outputLabel value="#{group.value}" />
                                             </c:forEach>
@@ -64,12 +64,12 @@
                             <p:tab id="tab4" title="Thursday">
                                 <h:panelGrid columns="2" cellpadding="10" >
                                     <h:panelGrid columns="1" cellpadding="10" border="1" >
-                                        <c:forEach items="#{monteCarlo.allTeachersListForOptm}" var="teacherName">
-                                            <h:outputLabel value="#{teacherName}" />
+                                        <c:forEach items="#{monteCarlo.studentsList}" var="student">
+                                            <h:outputLabel value="#{student}" />
                                         </c:forEach>
                                     </h:panelGrid>
                                     <h:panelGrid columns="#{propertiesForOptimizationBean.hoursPerDay}" cellpadding="10" border="1">
-                                        <c:forEach items="#{monteCarlo.optimizedTimeTableForTeacherThursday}" var="thursdayTm">
+                                        <c:forEach items="#{monteCarlo.timeTableForStudentsThursday}" var="thursdayTm">
                                             <c:forEach items="#{thursdayTm.value}" var="group">
                                                 <h:outputLabel value="#{group.value}" />
                                             </c:forEach>
@@ -80,12 +80,12 @@
                             <p:tab id="tab5" title="Friday">
                                 <h:panelGrid columns="2" cellpadding="10" >
                                     <h:panelGrid columns="1" cellpadding="10" border="1" >
-                                        <c:forEach items="#{monteCarlo.allTeachersListForOptm}" var="teacherName">
-                                            <h:outputLabel value="#{teacherName}" />
+                                        <c:forEach items="#{monteCarlo.studentsList}" var="student">
+                                            <h:outputLabel value="#{student}" />
                                         </c:forEach>
                                     </h:panelGrid>
                                     <h:panelGrid columns="#{propertiesForOptimizationBean.hoursPerDay}" cellpadding="10" border="1">
-                                        <c:forEach items="#{monteCarlo.optimizedTimeTableForTeacherFriday}" var="fridayTm">
+                                        <c:forEach items="#{monteCarlo.timeTableForStudentsFriday}" var="fridayTm">
                                             <c:forEach items="#{fridayTm.value}" var="group">
                                                 <h:outputLabel value="#{group.value}" />
                                             </c:forEach>

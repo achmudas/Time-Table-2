@@ -60,11 +60,150 @@ public class MonteCarlo extends OptimizationAlgorithm {
 
     List<String> teachersListOfIIIAndIVForOptm;
 
+    private static final String EMPTY_GROUP = "-----";
+
     private LinkedHashMap<String, LinkedHashMap> mondayTimeTable;
     private LinkedHashMap<String, LinkedHashMap> tuesdayTimeTable;
     private LinkedHashMap<String, LinkedHashMap> wednesdayTimeTable;
     private LinkedHashMap<String, LinkedHashMap> thursdayTimeTable;
     private LinkedHashMap<String, LinkedHashMap> fridayTimeTable;
+
+    private LinkedHashMap<Student, LinkedHashMap<String, String>> studentsTimeTableForMonday;
+    private LinkedHashMap<Student, LinkedHashMap<String, String>> studentsTimeTableForTuesday;
+    private LinkedHashMap<Student, LinkedHashMap<String, String>> studentsTimeTableForWednesday;
+    private LinkedHashMap<Student, LinkedHashMap<String, String>> studentsTimeTableForThursday;
+    private LinkedHashMap<Student, LinkedHashMap<String, String>> studentsTimeTableForFriday;
+    private List<String> studentsList;
+    private List<String> allTeachersListForOptm;
+    private List<String> teachersListOfIAndIIForOptm;
+
+    private List<LinkedHashMap> addStudentsTimeTablesToTheList(LinkedHashMap... studentsTMForTheDay) {
+        List<LinkedHashMap> allDaysStudentsTimeTables = new ArrayList<>();
+        for (LinkedHashMap studTmForTheDay : studentsTMForTheDay) {
+            for (Student student : studentsMockDataFiller.getAllStudents()) {
+                studTmForTheDay.put(student, new LinkedHashMap<String, String>());
+            }
+            allDaysStudentsTimeTables.add(studTmForTheDay);
+        }
+        return allDaysStudentsTimeTables;
+    }
+
+    private void convertTeachersTimeTableToStudents() {
+        List<LinkedHashMap> teachersAllDay = addDaysTimeTablesForIteration();
+        studentsTimeTableForMonday = new LinkedHashMap();
+        studentsTimeTableForTuesday = new LinkedHashMap();
+        studentsTimeTableForWednesday = new LinkedHashMap();
+        studentsTimeTableForThursday = new LinkedHashMap();
+        studentsTimeTableForFriday = new LinkedHashMap();
+
+        List<LinkedHashMap> allDaysStudentsTimeTables = addStudentsTimeTablesToTheList(studentsTimeTableForMonday, studentsTimeTableForTuesday, studentsTimeTableForWednesday, studentsTimeTableForThursday, studentsTimeTableForFriday);
+
+        for (LinkedHashMap<String, LinkedHashMap> daysTimeTable : teachersAllDay) {
+            // Very dirty hack because of rush
+            int weekDayNumber = teachersAllDay.indexOf(daysTimeTable);
+            Days weekDay = decideWeekDay(weekDayNumber);
+            Collection<String> teacherNames = daysTimeTable.keySet();
+//            System.out.println("Day: " + weekDay);
+            LinkedHashMap<Student, LinkedHashMap<String, String>> studentsTimeTableForDay = allDaysStudentsTimeTables.get(weekDayNumber);
+//            System.out.println("studentsTimeTableForDay: " + studentsTimeTableForDay);
+
+            LinkedHashMap<String, String> teachersTimeTableForTheDay = daysTimeTable.get(teacherNames.iterator().next());
+            Collection<String> lectureNumbers = teachersTimeTableForTheDay.keySet();
+
+            for (String teacherName : teacherNames) {
+//                System.out.println("teacherName: " + teacherName);
+
+                for (String lectureNumber : lectureNumbers) {
+//                    System.out.println("lectureNumber: " + lectureNumber);
+                    String groupNameToSplit = teachersTimeTableForTheDay.get(lectureNumber);
+                    String[] splittedGroupNames = groupNameToSplit.split(":");
+                    String groupName = splittedGroupNames[1].trim();
+                    if (!StringUtils.equals(groupName, EMPTY_GROUP)) {
+                        List<Student> groupsStudentsList = studentsMockDataFiller.getGroups().get(groupName).getStudents();
+
+                        for (Student stud : groupsStudentsList) {
+                            studentsTimeTableForDay.get(stud).put(lectureNumber, groupNameToSplit);
+                        }
+
+//                        System.out.println("studentsTimeTable for the day 2: " + studentsTimeTableForDay);
+//                        System.out.println("group name: " + groupName);
+//                        System.out.println("group students: " + groupsStudentsList);
+//                    
+//                        System.out.println(": " + studentsTimeTableForDay.get(groupsStudentsList));
+//                        
+//                    if (studentsTimeTableForDay.containsKey(groupsStudentsList)) {
+//                        System.out.println("groupsStudentsList: " + groupsStudentsList);
+////                        System.out.println("StudentsTimeTableForTheDay: " + studentsTimeTableForDay);
+//                        
+////                        studentsTimeTableForDay.get(groupsStudentsList).put(lectureNumber, groupNameToSplit);
+//                    } else {
+//                        System.out.println("Doesn't contain");
+//                    }
+                    }
+
+                }
+            }
+        }
+        System.out.println("AllDaysTM: " + allDaysStudentsTimeTables);
+
+    }
+    
+    private void optimizeMondayTimeTableForIAndIIGymnasium() {
+       List<LinkedHashMap> daysTimeTablesForItr = addDaysTimeTablesForIteration(); 
+       
+       LinkedHashMap<String, String> teachersTimeTable;
+       
+       for (int lectureNumber = 1; lectureNumber <= properties.getHoursPerDay(); lectureNumber++) {
+//            System.out.println("--------------Lecture-----------------");
+            for (String teacherName : teachersListOfIAndIIForOptm) {
+//                System.out.println("--------------Teacher-----------------");
+                for (LinkedHashMap dayTimeTable : daysTimeTablesForItr) {
+//                    System.out.println("-----------------Day-------------");
+                    teachersTimeTable = getTeachersTimeTable(teacherName, dayTimeTable);
+                    Teacher teacher = studentsMockDataFiller.getTeachers().get(teacherName);
+                    List<Group> teachersGroups = teacher.getTeachersGroups();
+
+                    int teachersGroupsTotal = teachersGroups.size();
+//                    System.out.println("teachersGroupsTotal: " + teachersGroupsTotal);
+
+                    if (teachersGroupsTotal == 0) {
+                        teachersTimeTable.put(String.valueOf(lectureNumber), lectureNumber + ": -----");//Add group, because all the groups for teacher was added already
+//                        System.out.println("add empty at the end");
+                        continue;
+                    }
+
+//                    int counter = 0;
+//                    counter = countThatThereIsIIIAndIVGymnGroups(teachersGroups, counter);
+//
+//                    if (counter == 0) {
+//                        teachersTimeTable.put(String.valueOf(lectureNumber), lectureNumber + ": -----");//Add group, because all the groups for teacher was added already
+//                        continue;
+//                    }
+
+                    Group group = getRandomGroup(teachersGroups, teachersGroupsTotal);
+
+                    while (group == null) {
+                        group = getRandomGroup(teachersGroups, teachersGroupsTotal);
+                    }
+
+                    boolean isGroupAllowedToAdd = isMandatoryConditionsMet(teacher, teachersGroups, group, lectureNumber, dayTimeTable);
+//                    System.out.println("Grupe idejimui: " + group);
+//                    System.out.println("isGroupAllowedToAdd: " + isGroupAllowedToAdd);
+//                    System.out.println("lecture number: " + lectureNumber);
+                    if (isGroupAllowedToAdd) {
+//                        System.out.println("Mokytojas: " + teacherName);
+//                        System.out.println("Grupe, kai galima deti ja: " + group);
+                        addGroupToTeachersTimeTable(group, teachersTimeTable, lectureNumber, teachersGroups);
+                    } else {
+                        teachersTimeTable.put(String.valueOf(lectureNumber), lectureNumber + ": -----");
+                    }
+                }
+            }
+        }
+        optimizationResults.setAllDaysTeacherTimeTable(daysTimeTablesForItr);
+       
+       
+    }
 
     private void optimizeMondayTimeTableForIIIAndIVGymnasium() {
         mondayTimeTable = new LinkedHashMap<>();
@@ -170,6 +309,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
     public LinkedHashMap getOptimizedTimeTableForTeacherMonday() {
         if (mondayTimeTable == null) { //TODO fix according java beans spec, that getter cannot have any business logic
             optimizeMondayTimeTableForIIIAndIVGymnasium();
+            optimizeMondayTimeTableForIAndIIGymnasium();
         }
         return mondayTimeTable;
     }
@@ -177,6 +317,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
     public LinkedHashMap getOptimizedTimeTableForTeacherTuesday() {
         if (tuesdayTimeTable == null) { //TODO fix according java beans spec, that getter cannot have any business logic
             optimizeMondayTimeTableForIIIAndIVGymnasium();
+            optimizeMondayTimeTableForIAndIIGymnasium();
         }
         return tuesdayTimeTable;
     }
@@ -184,6 +325,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
     public LinkedHashMap getOptimizedTimeTableForTeacherWednesday() {
         if (wednesdayTimeTable == null) { //TODO fix according java beans spec, that getter cannot have any business logic
             optimizeMondayTimeTableForIIIAndIVGymnasium();
+            optimizeMondayTimeTableForIAndIIGymnasium();
         }
         return wednesdayTimeTable;
     }
@@ -191,6 +333,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
     public LinkedHashMap getOptimizedTimeTableForTeacherThursday() {
         if (thursdayTimeTable == null) { //TODO fix according java beans spec, that getter cannot have any business logic
             optimizeMondayTimeTableForIIIAndIVGymnasium();
+            optimizeMondayTimeTableForIAndIIGymnasium();
         }
         return thursdayTimeTable;
     }
@@ -198,10 +341,48 @@ public class MonteCarlo extends OptimizationAlgorithm {
     public LinkedHashMap getOptimizedTimeTableForTeacherFriday() {
         if (fridayTimeTable == null) { //TODO fix according java beans spec, that getter cannot have any business logic
             optimizeMondayTimeTableForIIIAndIVGymnasium();
+            optimizeMondayTimeTableForIAndIIGymnasium();
         }
         return fridayTimeTable;
     }
     
+    public LinkedHashMap getTimeTableForStudentsMonday() {
+        if (studentsTimeTableForMonday == null) { //TODO fix according java beans spec, that getter cannot have any business logic
+            getTeachersListOfIIIAndIVForOptm(); // another dirty hack
+            optimizeMondayTimeTableForIIIAndIVGymnasium();
+            convertTeachersTimeTableToStudents();
+        }
+        return studentsTimeTableForMonday;
+    }
+
+    public LinkedHashMap getTimeTableForStudentsTuesday() {
+        if (studentsTimeTableForTuesday == null) { //TODO fix according java beans spec, that getter cannot have any business logic
+            convertTeachersTimeTableToStudents();
+        }
+        return studentsTimeTableForTuesday;
+    }
+
+    public LinkedHashMap getTimeTableForStudentsWednesday() {
+        if (studentsTimeTableForWednesday == null) { //TODO fix according java beans spec, that getter cannot have any business logic
+            convertTeachersTimeTableToStudents();
+        }
+        return studentsTimeTableForWednesday;
+    }
+
+    public LinkedHashMap getTimeTableForStudentsThursday() {
+        if (studentsTimeTableForThursday == null) { //TODO fix according java beans spec, that getter cannot have any business logic
+            convertTeachersTimeTableToStudents();
+        }
+        return studentsTimeTableForThursday;
+    }
+
+    public LinkedHashMap getTimeTableForStudentsFriday() {
+        if (studentsTimeTableForFriday == null) { //TODO fix according java beans spec, that getter cannot have any business logic
+            convertTeachersTimeTableToStudents();
+        }
+        return studentsTimeTableForFriday;
+    }
+
     public List<LinkedHashMap> getOptimizedTimeTableForTeachersForAllWeek() {
         return addDaysTimeTablesForIteration();
     }
@@ -224,6 +405,35 @@ public class MonteCarlo extends OptimizationAlgorithm {
             Collections.shuffle(teachersListOfIIIAndIVForOptm);
         }
         return teachersListOfIIIAndIVForOptm;
+    }
+    
+    public List<String> getTeachersListOfIAndIIForOptm() {
+        if (teachersListOfIAndIIForOptm == null) {
+            teachersListOfIAndIIForOptm = new ArrayList<>();
+            teachersListOfIAndIIForOptm = usersBean.getTeachersNamesFromIAndII();
+            Collections.shuffle(teachersListOfIAndIIForOptm);
+        }
+        return teachersListOfIAndIIForOptm;
+    }
+    
+    public List<String> getAllTeachersListForOptm() {
+        if (allTeachersListForOptm == null) {
+            allTeachersListForOptm = new ArrayList<>();
+            allTeachersListForOptm.addAll(getTeachersListOfIIIAndIVForOptm());
+            allTeachersListForOptm.addAll(getTeachersListOfIAndIIForOptm());
+        }
+        return allTeachersListForOptm;
+    }
+    
+    
+    public List<String> getStudentsList() {
+        if (studentsList == null) {
+            studentsList = new ArrayList<>();
+            for (Student stud : studentsMockDataFiller.getAllStudents()) {
+                studentsList.add(stud.getName());
+            }
+        }
+        return studentsList;
     }
 
     private int generateRandomInteger(int teachersGroupsTotal) {
@@ -343,5 +553,24 @@ public class MonteCarlo extends OptimizationAlgorithm {
 
         }
         return oneLectureInOneRoom;
+    }
+
+    private Days decideWeekDay(int weekDayNumber) {
+        Days day = null;
+        switch (weekDayNumber) {
+            case 0:
+                return Days.MONDAY;
+            case 1:
+                return Days.TUESDAY;
+            case 2:
+                return Days.WEDNESDAY;
+            case 3:
+                return Days.THURSDAY;
+            case 4:
+                return Days.FRIDAY;
+            default:
+                return day;
+
+        }
     }
 }
