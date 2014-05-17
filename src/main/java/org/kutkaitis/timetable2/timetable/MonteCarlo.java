@@ -147,15 +147,16 @@ public class MonteCarlo extends OptimizationAlgorithm {
         System.out.println("AllDaysTM: " + allDaysStudentsTimeTables);
 
     }
-    
+
     private void optimizeMondayTimeTableForIAndIIGymnasium() {
-       List<LinkedHashMap> daysTimeTablesForItr = addDaysTimeTablesForIteration(); 
-       
-       LinkedHashMap<String, String> teachersTimeTable;
-       
-       for (int lectureNumber = 1; lectureNumber <= properties.getHoursPerDay(); lectureNumber++) {
+        List<LinkedHashMap> daysTimeTablesForItr = addDaysTimeTablesForIteration();
+        List<String> teachersForIteration = createTeachersListForIteration();
+
+        LinkedHashMap<String, String> teachersTimeTable;
+
+        for (int lectureNumber = 1; lectureNumber <= properties.getHoursPerDay(); lectureNumber++) {
 //            System.out.println("--------------Lecture-----------------");
-            for (String teacherName : teachersListOfIAndIIForOptm) {
+            for (String teacherName : teachersForIteration) {
 //                System.out.println("--------------Teacher-----------------");
                 for (LinkedHashMap dayTimeTable : daysTimeTablesForItr) {
 //                    System.out.println("-----------------Day-------------");
@@ -172,20 +173,11 @@ public class MonteCarlo extends OptimizationAlgorithm {
                         continue;
                     }
 
-//                    int counter = 0;
-//                    counter = countThatThereIsIIIAndIVGymnGroups(teachersGroups, counter);
-//
-//                    if (counter == 0) {
-//                        teachersTimeTable.put(String.valueOf(lectureNumber), lectureNumber + ": -----");//Add group, because all the groups for teacher was added already
-//                        continue;
-//                    }
-
                     Group group = getRandomGroup(teachersGroups, teachersGroupsTotal);
 
                     while (group == null) {
                         group = getRandomGroup(teachersGroups, teachersGroupsTotal);
                     }
-
                     boolean isGroupAllowedToAdd = isMandatoryConditionsMet(teacher, teachersGroups, group, lectureNumber, dayTimeTable);
 //                    System.out.println("Grupe idejimui: " + group);
 //                    System.out.println("isGroupAllowedToAdd: " + isGroupAllowedToAdd);
@@ -195,14 +187,27 @@ public class MonteCarlo extends OptimizationAlgorithm {
 //                        System.out.println("Grupe, kai galima deti ja: " + group);
                         addGroupToTeachersTimeTable(group, teachersTimeTable, lectureNumber, teachersGroups);
                     } else {
+                        if (teacher.isTeacherInAllClasses()) { continue; }
                         teachersTimeTable.put(String.valueOf(lectureNumber), lectureNumber + ": -----");
                     }
+
                 }
             }
         }
         optimizationResults.setAllDaysTeacherTimeTable(daysTimeTablesForItr);
-       
-       
+
+    }
+
+    private List<String> createTeachersListForIteration() {
+        List<String> teachersForIteration = new ArrayList<>();
+        teachersForIteration.addAll(teachersListOfIAndIIForOptm);
+        // Add for optimization I and II teachers who teaches in all classes
+        for (String teacherName : usersBean.getTeachersNamesFromIIIAndIV()) {
+            if (studentsMockDataFiller.getTeachers().get(teacherName).isTeacherInAllClasses()) {
+                teachersForIteration.add(teacherName);
+            }
+        }
+        return teachersForIteration;
     }
 
     private void optimizeMondayTimeTableForIIIAndIVGymnasium() {
@@ -222,6 +227,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
 //                System.out.println("--------------Teacher-----------------");
                 for (LinkedHashMap dayTimeTable : daysTimeTablesForItr) {
 //                    System.out.println("-----------------Day-------------");
+//                     System.out.println("lecture number: " + lectureNumber);
                     teachersTimeTable = getTeachersTimeTable(teacherName, dayTimeTable);
                     Teacher teacher = teachersMapForDeletion.get(teacherName);
                     List<Group> teachersGroups = teacher.getTeachersGroups();
@@ -230,6 +236,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
 //                    System.out.println("teachersGroupsTotal: " + teachersGroupsTotal);
 
                     if (teachersGroupsTotal == 0) {
+//                        System.out.println("Tuscia");
                         teachersTimeTable.put(String.valueOf(lectureNumber), lectureNumber + ": -----");//Add group, because all the groups for teacher was added already
 //                        System.out.println("add empty at the end");
                         continue;
@@ -252,7 +259,6 @@ public class MonteCarlo extends OptimizationAlgorithm {
                     boolean isGroupAllowedToAdd = isMandatoryConditionsMet(teacher, teachersGroups, group, lectureNumber, dayTimeTable);
 //                    System.out.println("Grupe idejimui: " + group);
 //                    System.out.println("isGroupAllowedToAdd: " + isGroupAllowedToAdd);
-//                    System.out.println("lecture number: " + lectureNumber);
                     if (isGroupAllowedToAdd) {
 //                        System.out.println("Mokytojas: " + teacherName);
 //                        System.out.println("Grupe, kai galima deti ja: " + group);
@@ -263,8 +269,6 @@ public class MonteCarlo extends OptimizationAlgorithm {
                 }
             }
         }
-        optimizationResults.setAllDaysTeacherTimeTable(daysTimeTablesForItr);
-
     }
 
     private List<LinkedHashMap> addDaysTimeTablesForIteration() {
@@ -345,7 +349,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
         }
         return fridayTimeTable;
     }
-    
+
     public LinkedHashMap getTimeTableForStudentsMonday() {
         if (studentsTimeTableForMonday == null) { //TODO fix according java beans spec, that getter cannot have any business logic
             getTeachersListOfIIIAndIVForOptm(); // another dirty hack
@@ -406,7 +410,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
         }
         return teachersListOfIIIAndIVForOptm;
     }
-    
+
     public List<String> getTeachersListOfIAndIIForOptm() {
         if (teachersListOfIAndIIForOptm == null) {
             teachersListOfIAndIIForOptm = new ArrayList<>();
@@ -415,7 +419,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
         }
         return teachersListOfIAndIIForOptm;
     }
-    
+
     public List<String> getAllTeachersListForOptm() {
         if (allTeachersListForOptm == null) {
             allTeachersListForOptm = new ArrayList<>();
@@ -424,8 +428,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
         }
         return allTeachersListForOptm;
     }
-    
-    
+
     public List<String> getStudentsList() {
         if (studentsList == null) {
             studentsList = new ArrayList<>();
@@ -504,10 +507,30 @@ public class MonteCarlo extends OptimizationAlgorithm {
         boolean mandatoryConditionsMet = false;
         boolean studentInOneLectureAtTheTime = isStudentInOneLectureAtTheTime(teacher, teachersGroups, group, lectureNumber, dayTimeTable);
         boolean oneGroupInOneClassroom = isOneGroupInOneClassroom(group, lectureNumber, dayTimeTable); // TODO probably need to refactor and use one method fur this stuff
-        if (studentInOneLectureAtTheTime && oneGroupInOneClassroom) {
+        boolean isEmptyLecture = isAllowedToFillEmptyLecture(group, teacher, lectureNumber, dayTimeTable);
+        if (studentInOneLectureAtTheTime && oneGroupInOneClassroom && isEmptyLecture) {
             mandatoryConditionsMet = true;
         }
 //        System.out.println("Mandatory conditions met: " + mandatoryConditionsMet);
+        return mandatoryConditionsMet;
+    }
+
+    private boolean isAllowedToFillEmptyLecture(Group group, Teacher teacher, int lectureNumber, LinkedHashMap<String, LinkedHashMap> dayTimeTable) {
+        boolean mandatoryConditionsMet = false;
+        
+        if (teacher.isTeacherInAllClasses()) {
+//            System.out.println("Teacher name: " + teacher.getName());
+//            System.out.println("Lecture number: " +lectureNumber);
+//            System.out.println("Group to add: " + group.getGroupName());
+            String groupName = ((String) dayTimeTable.get(teacher.getName()).get(String.valueOf(lectureNumber))).split(":")[1].trim();
+//            System.out.println("Group name found: " + groupName);
+            if (StringUtils.equals(groupName, EMPTY_GROUP)) {
+                mandatoryConditionsMet = true;
+            }
+        } else {
+            mandatoryConditionsMet = true;
+        }
+        System.out.println("mandatoryConditions: " + mandatoryConditionsMet);
         return mandatoryConditionsMet;
     }
 

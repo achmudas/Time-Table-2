@@ -18,7 +18,6 @@ package org.kutkaitis.timetable2.timetable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.kutkaitis.timetable2.domain.Student;
 import org.kutkaitis.timetable2.mock.StudentsMockDataFiller;
-import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -67,7 +65,8 @@ public class OptimizationResultsBean {
         int pointsForBadWorkingDayForTeacherIIIAndIV = calculateNotAppropriateWorkingDaysForTeacherIIIAndIV();
         int pointsForBadWorkingHoursIIIAndIV = calculateBadWorkingHoursTeacherIIIAndIV();
 //        int pointsForLectureWindowInStudentsGroup = calculateLectureWindowsInStudentsGroup(); // TODO calculate penalties for students windows
-        return String.valueOf(pointsForBadWorkingHoursIIIAndIV);
+        return String.valueOf(pointsTeacherLectureWindowIIIAndIV + pointsMoreThanSevenLectures + pointsForLectureDidactics 
+        + pointsForBadWorkingDayForTeacherIIIAndIV + pointsForBadWorkingHoursIIIAndIV);
     }
     
     private List<LinkedHashMap> addStudentsTimeTablesToTheList(LinkedHashMap ... studentsTMForTheDay) {

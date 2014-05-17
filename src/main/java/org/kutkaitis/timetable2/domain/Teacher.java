@@ -17,6 +17,15 @@ public class Teacher {
     private boolean teacherInIIIAndIVGymnasiumClasses;
     private List<Days> freeDays;
     private Map<Days, String> freeLectures;
+    private boolean teacherInAllClasses;
+
+    public boolean isTeacherInAllClasses() {
+        return teacherInAllClasses;
+    }
+
+    public void setTeacherInAllClasses(boolean teacherInAllClasses) {
+        this.teacherInAllClasses = teacherInAllClasses;
+    }
 
     public List<Days> getFreeDays() {
         return freeDays;
