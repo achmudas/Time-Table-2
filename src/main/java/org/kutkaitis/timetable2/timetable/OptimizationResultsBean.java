@@ -53,8 +53,12 @@ public class OptimizationResultsBean {
     private List<LinkedHashMap> allDaysTeacherTimeTable;
     private static final String EMPTY_GROUP = "-----";
 
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
     public String getDuration() {
-        return "0";
+        return duration;
     }
 
     public String getTotalPenaltyPoints() {
@@ -159,6 +163,7 @@ public class OptimizationResultsBean {
             for (String teacherName : teacherNames) {
                 LinkedHashMap<String, String> teachersTimeTableForTheDay = daysTimeTable.get(teacherName);
                 Collection<String> lectureNumbers = teachersTimeTableForTheDay.keySet();
+//                System.out.println("teacherName: " + teacherName);
 
                 for (String lectureNumber : lectureNumbers) {
                     String groupNameToSplit = teachersTimeTableForTheDay.get(lectureNumber);
@@ -323,6 +328,7 @@ public class OptimizationResultsBean {
     }
 
     public List<LinkedHashMap> getAllDaysTeacherTimeTable() {
+//        System.out.println("alldayteachertimetable: " + allDaysTeacherTimeTable.hashCode());
         return allDaysTeacherTimeTable;
     }
 

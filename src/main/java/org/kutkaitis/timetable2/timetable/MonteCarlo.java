@@ -24,9 +24,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import javax.faces.bean.ManagedBean;
+import java.util.concurrent.TimeUnit;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -37,7 +36,6 @@ import org.kutkaitis.timetable2.domain.Group;
 import org.kutkaitis.timetable2.domain.Student;
 import org.kutkaitis.timetable2.domain.Teacher;
 import org.kutkaitis.timetable2.mock.StudentsMockDataFiller;
-import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -76,6 +74,108 @@ public class MonteCarlo extends OptimizationAlgorithm {
     private List<String> studentsList;
     private List<String> allTeachersListForOptm;
     private List<String> teachersListOfIAndIIForOptm;
+    private List<LinkedHashMap> daysTimeTablesForItr;
+
+    private String totalPenaltyPoints;
+
+    public void optimizeTimetable() {
+        
+        long startTime = System.currentTimeMillis();
+        
+        Map<Integer, List<LinkedHashMap>> bestResult = new LinkedHashMap<>();
+        for (int i = 0; i < properties.getOptimisationIterations(); i++) {
+
+            // Clearing all values for new optimization iteration
+            allTeachersListForOptm = null;
+            teachersListOfIAndIIForOptm = null;
+            teachersListOfIIIAndIVForOptm = null;
+
+            mondayTimeTable = new LinkedHashMap<>();
+            tuesdayTimeTable = new LinkedHashMap<>();
+            wednesdayTimeTable = new LinkedHashMap<>();
+            thursdayTimeTable = new LinkedHashMap<>();
+            fridayTimeTable = new LinkedHashMap<>();
+
+            getAllTeachersListForOptm(); // Dirty hack for action listener
+
+            System.out.println("ITERATION: " + i);
+            optimizeMondayTimeTableForIIIAndIVGymnasium();
+//            System.out.println("Days time tables for itr: " +daysTimeTablesForItr);
+            optimizeMondayTimeTableForIAndIIGymnasium();
+            
+            int bestRes = Integer.valueOf(optimizationResults.getTotalPenaltyPoints());
+            System.out.println("bestRes: " + bestRes);
+            if (bestResult.isEmpty()) {
+                bestResult.put(bestRes, daysTimeTablesForItr);
+                continue;
+            }
+            
+            Collection<Integer> res = bestResult.keySet();
+            for (Integer resultNumber : res) {
+                if (bestRes < resultNumber) {
+                    bestResult.remove(resultNumber);
+//                    List<LinkedHashMap> daysTimeTablesToStore = new ArrayList<>();
+//                    for (LinkedHashMap teachersTimeTable : daysTimeTablesForItr) {
+//                        for (teachersTimeTable)
+//                    }
+                    System.out.println("daysTimeTable: " + daysTimeTablesForItr);
+                    bestResult.put(bestRes, daysTimeTablesForItr); //TODO make object copies, otherwise it will be wiped out
+
+                }
+            }
+            
+            System.out.println("MondayTM: " + mondayTimeTable);
+        }
+        
+        // Adding best result
+        Collection<Integer> res = bestResult.keySet();
+        System.out.println("res: " + res);
+        for (Integer resultNumber : res) {
+            System.out.println("resultNumber: " + resultNumber );
+            setTotalPenaltyPoints(String.valueOf(resultNumber));
+            System.out.println("best result hash code: " + bestResult.get(resultNumber));
+            optimizationResults.setAllDaysTeacherTimeTable(bestResult.get(resultNumber));
+            System.out.println("Total recalcualed current tm penalty points: " + optimizationResults.getTotalPenaltyPoints());
+            
+            int counter = 0;
+            for (LinkedHashMap allDaysTM : bestResult.get(resultNumber)) {
+                if (counter == 0) {
+                    setMondayTimeTable(allDaysTM);
+                    Collection<String> teacherNames = allDaysTM.keySet();
+                    setAllTeachersListForOptm(new ArrayList<>(teacherNames));
+                    
+                }
+                if (counter == 1) {
+                    setTuesdayTimeTable(allDaysTM);
+                }
+                if (counter == 2) {
+                    setWednesdayTimeTable(allDaysTM);
+                }
+                if (counter ==3 ) {
+                    setThursdayTimeTable(allDaysTM);
+                }
+                if (counter == 4) {
+                    setFridayTimeTable(allDaysTM);
+                }
+                counter++;
+            }
+        }
+
+        long stopTime = System.currentTimeMillis();
+      long elapsedTime = stopTime - startTime;
+        long timeSeconds = TimeUnit.MILLISECONDS.toSeconds(elapsedTime);
+      optimizationResults.setDuration(String.valueOf(timeSeconds));
+        
+    }
+
+    private void setTotalPenaltyPoints(String totalPenaltyPoints) {
+        System.out.println("Total penalty points: " + totalPenaltyPoints);
+        this.totalPenaltyPoints = totalPenaltyPoints;
+    }
+
+    public String getTotalPenaltyPoints() {
+        return totalPenaltyPoints;
+    }
 
     private List<LinkedHashMap> addStudentsTimeTablesToTheList(LinkedHashMap... studentsTMForTheDay) {
         List<LinkedHashMap> allDaysStudentsTimeTables = new ArrayList<>();
@@ -154,19 +254,23 @@ public class MonteCarlo extends OptimizationAlgorithm {
 
         LinkedHashMap<String, String> teachersTimeTable;
 
+        HashMap<String, Teacher> teachersMapForDeletion = copyTeacherForDeletion();
+
         for (int lectureNumber = 1; lectureNumber <= properties.getHoursPerDay(); lectureNumber++) {
 //            System.out.println("--------------Lecture-----------------");
+//            System.out.println("Lecture number: " + lectureNumber);
             for (String teacherName : teachersForIteration) {
 //                System.out.println("--------------Teacher-----------------");
                 for (LinkedHashMap dayTimeTable : daysTimeTablesForItr) {
 //                    System.out.println("-----------------Day-------------");
                     teachersTimeTable = getTeachersTimeTable(teacherName, dayTimeTable);
-                    Teacher teacher = studentsMockDataFiller.getTeachers().get(teacherName);
+                    Teacher teacher = teachersMapForDeletion.get(teacherName);
                     List<Group> teachersGroups = teacher.getTeachersGroups();
 
                     int teachersGroupsTotal = teachersGroups.size();
 //                    System.out.println("teachersGroupsTotal: " + teachersGroupsTotal);
 
+//                    System.out.println("Teacher: " + teacherName);
                     if (teachersGroupsTotal == 0) {
                         teachersTimeTable.put(String.valueOf(lectureNumber), lectureNumber + ": -----");//Add group, because all the groups for teacher was added already
 //                        System.out.println("add empty at the end");
@@ -179,15 +283,19 @@ public class MonteCarlo extends OptimizationAlgorithm {
                         group = getRandomGroup(teachersGroups, teachersGroupsTotal);
                     }
                     boolean isGroupAllowedToAdd = isMandatoryConditionsMet(teacher, teachersGroups, group, lectureNumber, dayTimeTable);
-//                    System.out.println("Grupe idejimui: " + group);
+//                    System.out.println("Grupe idejimui: " + group.getGroupName());
 //                    System.out.println("isGroupAllowedToAdd: " + isGroupAllowedToAdd);
+
+//                    System.out.println("Teachers time table: " + teachersTimeTable);
 //                    System.out.println("lecture number: " + lectureNumber);
                     if (isGroupAllowedToAdd) {
 //                        System.out.println("Mokytojas: " + teacherName);
 //                        System.out.println("Grupe, kai galima deti ja: " + group);
                         addGroupToTeachersTimeTable(group, teachersTimeTable, lectureNumber, teachersGroups);
                     } else {
-                        if (teacher.isTeacherInAllClasses()) { continue; }
+                        if (teacher.isTeacherInAllClasses()) {
+                            continue;
+                        }
                         teachersTimeTable.put(String.valueOf(lectureNumber), lectureNumber + ": -----");
                     }
 
@@ -211,23 +319,26 @@ public class MonteCarlo extends OptimizationAlgorithm {
     }
 
     private void optimizeMondayTimeTableForIIIAndIVGymnasium() {
-        mondayTimeTable = new LinkedHashMap<>();
-        tuesdayTimeTable = new LinkedHashMap<>();
-        wednesdayTimeTable = new LinkedHashMap<>();
-        thursdayTimeTable = new LinkedHashMap<>();
-        fridayTimeTable = new LinkedHashMap<>();
+//        mondayTimeTable = new LinkedHashMap<>();
+//        tuesdayTimeTable = new LinkedHashMap<>();
+//        wednesdayTimeTable = new LinkedHashMap<>();
+//        thursdayTimeTable = new LinkedHashMap<>();
+//        fridayTimeTable = new LinkedHashMap<>();
         List<LinkedHashMap> daysTimeTablesForItr = addDaysTimeTablesForIteration();
+//        System.out.println("days time table in III and IV: " + daysTimeTablesForItr);
 
         LinkedHashMap<String, String> teachersTimeTable;
         HashMap<String, Teacher> teachersMapForDeletion = copyTeacherForDeletion();
 
         for (int lectureNumber = 1; lectureNumber <= properties.getHoursPerDay(); lectureNumber++) {
 //            System.out.println("--------------Lecture-----------------");
+//            System.out.println("teachersListOfIIIAndIV: " + teachersListOfIIIAndIVForOptm);
             for (String teacherName : teachersListOfIIIAndIVForOptm) {
 //                System.out.println("--------------Teacher-----------------");
                 for (LinkedHashMap dayTimeTable : daysTimeTablesForItr) {
 //                    System.out.println("-----------------Day-------------");
 //                     System.out.println("lecture number: " + lectureNumber);
+//                    System.out.println("daytimetable: " + dayTimeTable);
                     teachersTimeTable = getTeachersTimeTable(teacherName, dayTimeTable);
                     Teacher teacher = teachersMapForDeletion.get(teacherName);
                     List<Group> teachersGroups = teacher.getTeachersGroups();
@@ -272,7 +383,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
     }
 
     private List<LinkedHashMap> addDaysTimeTablesForIteration() {
-        List<LinkedHashMap> daysTimeTablesForItr = new ArrayList<LinkedHashMap>();
+        daysTimeTablesForItr = new ArrayList<>();
         daysTimeTablesForItr.add(mondayTimeTable);
         daysTimeTablesForItr.add(tuesdayTimeTable);
         daysTimeTablesForItr.add(wednesdayTimeTable);
@@ -284,11 +395,25 @@ public class MonteCarlo extends OptimizationAlgorithm {
     private HashMap<String, Teacher> copyTeacherForDeletion() {
         HashMap<String, Teacher> teachersMapForDeletion = new HashMap<>();
         for (Teacher teacher : studentsMockDataFiller.getTeachers().values()) {
+            List<Group> groupsForDel = new ArrayList<>();
             Teacher teacherToBeAddForDel = new Teacher();
             teacherToBeAddForDel.setName(teacher.getName());
             teacherToBeAddForDel.setTeacherDisciplines(teacher.getTeacherDisciplines());
             teacherToBeAddForDel.setTeacherInIIIAndIVGymnasiumClasses(teacher.isTeacherInIIIAndIVGymnasiumClasses());
-            teacherToBeAddForDel.setTeachersGroups(teacher.getTeachersGroups());
+            for (Group group : teacher.getTeachersGroups()) {
+                Group delGroup = new Group();
+                delGroup.setClassRoom(group.getClassRoom());
+                delGroup.setDiscipline(group.getDiscipline());
+                delGroup.setGroupName(group.getGroupName());
+                delGroup.setIiGymnasiumGroup(group.isIiGymnasiumGroup());
+                delGroup.setIiiGymnasiumGroup(group.isIiiGymnasiumGroup());
+                delGroup.setIvGymnasiumGroup(group.isIvGymnasiumGroup());
+                delGroup.setiGymnasiumGroup(group.isiGymnasiumGroup());
+                delGroup.setStudents(group.getStudents());
+                delGroup.setTeacher(group.getTeacher());
+                groupsForDel.add(group);
+            }
+            teacherToBeAddForDel.setTeachersGroups(groupsForDel);
             teachersMapForDeletion.put(teacherToBeAddForDel.getName(), teacherToBeAddForDel);
         }
         return teachersMapForDeletion;
@@ -311,42 +436,22 @@ public class MonteCarlo extends OptimizationAlgorithm {
     }
 
     public LinkedHashMap getOptimizedTimeTableForTeacherMonday() {
-        if (mondayTimeTable == null) { //TODO fix according java beans spec, that getter cannot have any business logic
-            optimizeMondayTimeTableForIIIAndIVGymnasium();
-            optimizeMondayTimeTableForIAndIIGymnasium();
-        }
         return mondayTimeTable;
     }
 
     public LinkedHashMap getOptimizedTimeTableForTeacherTuesday() {
-        if (tuesdayTimeTable == null) { //TODO fix according java beans spec, that getter cannot have any business logic
-            optimizeMondayTimeTableForIIIAndIVGymnasium();
-            optimizeMondayTimeTableForIAndIIGymnasium();
-        }
         return tuesdayTimeTable;
     }
 
     public LinkedHashMap getOptimizedTimeTableForTeacherWednesday() {
-        if (wednesdayTimeTable == null) { //TODO fix according java beans spec, that getter cannot have any business logic
-            optimizeMondayTimeTableForIIIAndIVGymnasium();
-            optimizeMondayTimeTableForIAndIIGymnasium();
-        }
         return wednesdayTimeTable;
     }
 
     public LinkedHashMap getOptimizedTimeTableForTeacherThursday() {
-        if (thursdayTimeTable == null) { //TODO fix according java beans spec, that getter cannot have any business logic
-            optimizeMondayTimeTableForIIIAndIVGymnasium();
-            optimizeMondayTimeTableForIAndIIGymnasium();
-        }
         return thursdayTimeTable;
     }
 
     public LinkedHashMap getOptimizedTimeTableForTeacherFriday() {
-        if (fridayTimeTable == null) { //TODO fix according java beans spec, that getter cannot have any business logic
-            optimizeMondayTimeTableForIIIAndIVGymnasium();
-            optimizeMondayTimeTableForIAndIIGymnasium();
-        }
         return fridayTimeTable;
     }
 
@@ -517,11 +622,13 @@ public class MonteCarlo extends OptimizationAlgorithm {
 
     private boolean isAllowedToFillEmptyLecture(Group group, Teacher teacher, int lectureNumber, LinkedHashMap<String, LinkedHashMap> dayTimeTable) {
         boolean mandatoryConditionsMet = false;
-        
+
         if (teacher.isTeacherInAllClasses()) {
 //            System.out.println("Teacher name: " + teacher.getName());
 //            System.out.println("Lecture number: " +lectureNumber);
 //            System.out.println("Group to add: " + group.getGroupName());
+//            System.out.println("dayTimeTable: " + dayTimeTable);
+//            System.out.println("teachers lectures: " + dayTimeTable.get(teacher.getName()));
             String groupName = ((String) dayTimeTable.get(teacher.getName()).get(String.valueOf(lectureNumber))).split(":")[1].trim();
 //            System.out.println("Group name found: " + groupName);
             if (StringUtils.equals(groupName, EMPTY_GROUP)) {
@@ -530,7 +637,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
         } else {
             mandatoryConditionsMet = true;
         }
-        System.out.println("mandatoryConditions: " + mandatoryConditionsMet);
+//        System.out.println("mandatoryConditions: " + mandatoryConditionsMet);
         return mandatoryConditionsMet;
     }
 
@@ -596,4 +703,30 @@ public class MonteCarlo extends OptimizationAlgorithm {
 
         }
     }
+
+    private void setMondayTimeTable(LinkedHashMap<String, LinkedHashMap> mondayTimeTable) {
+        this.mondayTimeTable = mondayTimeTable;
+    }
+
+    private void setTuesdayTimeTable(LinkedHashMap<String, LinkedHashMap> tuesdayTimeTable) {
+        this.tuesdayTimeTable = tuesdayTimeTable;
+    }
+
+    private void setWednesdayTimeTable(LinkedHashMap<String, LinkedHashMap> wednesdayTimeTable) {
+        this.wednesdayTimeTable = wednesdayTimeTable;
+    }
+
+    private void setThursdayTimeTable(LinkedHashMap<String, LinkedHashMap> thursdayTimeTable) {
+        this.thursdayTimeTable = thursdayTimeTable;
+    }
+
+    private void setFridayTimeTable(LinkedHashMap<String, LinkedHashMap> fridayTimeTable) {
+        this.fridayTimeTable = fridayTimeTable;
+    }
+
+    private void setAllTeachersListForOptm(List<String> allTeachersListForOptm) {
+        this.allTeachersListForOptm = allTeachersListForOptm;
+    }
+    
+    
 }
