@@ -75,6 +75,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
     private List<String> allTeachersListForOptm;
     private List<String> teachersListOfIAndIIForOptm;
     private List<LinkedHashMap> daysTimeTablesForItr;
+    private List<String> leftUnaddedGroups;
 
     private String totalPenaltyPoints;
 
@@ -276,7 +277,7 @@ public class MonteCarlo extends OptimizationAlgorithm {
 //                        System.out.println("add empty at the end");
                         continue;
                     }
-
+                    
                     Group group = getRandomGroup(teachersGroups, teachersGroupsTotal);
 
                     while (group == null) {
@@ -302,6 +303,9 @@ public class MonteCarlo extends OptimizationAlgorithm {
                 }
             }
         }
+        
+        
+        
         optimizationResults.setAllDaysTeacherTimeTable(daysTimeTablesForItr);
 
     }

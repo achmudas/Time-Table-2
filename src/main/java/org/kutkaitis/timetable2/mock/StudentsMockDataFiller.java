@@ -50,12 +50,20 @@ public class StudentsMockDataFiller {
         Discipline ltI_II = createDiscipline("Lietuviu kalba", "5");
         Discipline fzI_II = createDiscipline("Fizika", "2");
         Discipline angI_II = createDiscipline("Anglu kalba", "3");
+        Discipline bioI_II = createDiscipline("Biologija", "2");
+        Discipline chemI_II = createDiscipline("Chemija", "2");
+        Discipline istI_II = createDiscipline("Istorija", "3");
+        Discipline geoI_II = createDiscipline("Geografija", "2");
 
         List<Discipline> choosenDisciplinesI_II = new ArrayList<>();
         choosenDisciplinesI_II.add(mtI_II);
         choosenDisciplinesI_II.add(fzI_II);
         choosenDisciplinesI_II.add(angI_II);
         choosenDisciplinesI_II.add(ltI_II);
+        choosenDisciplinesI_II.add(bioI_II);
+        choosenDisciplinesI_II.add(chemI_II);
+        choosenDisciplinesI_II.add(istI_II);
+        choosenDisciplinesI_II.add(geoI_II);
 
         Teacher mtTeacherI_II_IIIA_IVA = createTeacher("TeacherI&II&IIIA&IVAMt", true, true, null, null, mtI_II);
         
@@ -67,9 +75,15 @@ public class StudentsMockDataFiller {
         Teacher ltTeacherI_II = createTeacher("TeacherI&IILt", false, false, freeDaysForLtTeach, freeHoursLtTeacher, ltI_II);
         Teacher fzTeacherI_II_IIIA_IVA = createTeacher("TeacherI&II&IIIA&IVAFz", true, true, null, null, fzI_II);
         Teacher angTeacherI_II = createTeacher("TeacherI&IIAng", false, false, freeDaysForLtTeach, freeHoursLtTeacher, angI_II );
+        Teacher bioTeacherI_II_IIIAB_IVAB = createTeacher("TeacherI&II&IIIAB&IVABBio", true, true, null, null, bioI_II);
+        Teacher chemTeacherI_II_IIIAB_IVAB = createTeacher("TeacherI&II&IIIAB&IVABChem", true, true, null, null, chemI_II);
+        Teacher istTeacherI_II_IIIAB_IVAB = createTeacher("TeacherI&II&IIIAB&IVABIst", true, true, null, null, istI_II);
+        Teacher geoTeacherI_II_IIIAB_IVAB = createTeacher("TeacherI&II&IIIAB&IVABGeo", true, true, null, null, geoI_II);
 
         List<Student> studentsIList1 = createStudentsList("StudentI_", 1, 30, choosenDisciplinesI_II);
         List<Student> studentsIList2 = createStudentsList("StudentI_", 31, 60, choosenDisciplinesI_II);
+        List<Student> studentsIList3 = createStudentsList("StudentI_", 61, 80, choosenDisciplinesI_II);
+        List<Student> studentsIList4 = createStudentsList("StudentI_", 81, 101, choosenDisciplinesI_II);
         
         ClassRoom classRoom1IAndII = new ClassRoom();
         classRoom1IAndII.setRoomNumber("100");
@@ -81,6 +95,13 @@ public class StudentsMockDataFiller {
         ClassRoom classRoom3IAndII = new ClassRoom();
         classRoom3IAndII.setRoomNumber("102");
         classRoom3IAndII.setSpecializedRoom(false);
+        ClassRoom classRoom15IAndII = new ClassRoom();
+        classRoom15IAndII.setRoomNumber("303");
+        classRoom15IAndII.setSpecializedRoom(true);
+        ClassRoom classRoom16IAndII = new ClassRoom();
+        classRoom16IAndII.setRoomNumber("304");
+        classRoom16IAndII.setSpecializedRoom(false);
+        
         ClassRoom classRoom4IAndII = new ClassRoom();
         classRoom4IAndII.setRoomNumber("103");
         classRoom4IAndII.setSpecializedRoom(false);
@@ -121,15 +142,43 @@ public class StudentsMockDataFiller {
         // 1 gymnasium groups
         createGroup(studentsIList1, ltI_II, ltTeacherI_II, "LtI1", classRoom1IAndII);
         createGroup(studentsIList2, ltI_II, ltTeacherI_II, "LtI2", classRoom1IAndII);
+        createGroup(studentsIList3, ltI_II, ltTeacherI_II, "LtI3", classRoom1IAndII);
+        createGroup(studentsIList4, ltI_II, ltTeacherI_II, "LtI4", classRoom1IAndII);
 
         createGroup(studentsIList1, mtI_II, mtTeacherI_II_IIIA_IVA, "MtI1", classRoom2IAndII);
         createGroup(studentsIList2, mtI_II, mtTeacherI_II_IIIA_IVA, "MtI2", classRoom2IAndII);
+        createGroup(studentsIList3, mtI_II, mtTeacherI_II_IIIA_IVA, "MtI3", classRoom2IAndII);
+        createGroup(studentsIList3, mtI_II, mtTeacherI_II_IIIA_IVA, "MtI4", classRoom2IAndII);
 
         createGroup(studentsIList1, fzI_II, fzTeacherI_II_IIIA_IVA, "FzI1", classRoom12FzIAndII);
         createGroup(studentsIList2, fzI_II, fzTeacherI_II_IIIA_IVA, "FzI2", classRoom12FzIAndII);
+        createGroup(studentsIList3, fzI_II, fzTeacherI_II_IIIA_IVA, "FzI3", classRoom12FzIAndII);
+        createGroup(studentsIList3, fzI_II, fzTeacherI_II_IIIA_IVA, "FzI4", classRoom12FzIAndII);
 
         createGroup(studentsIList1, angI_II, angTeacherI_II, "AngI1", classRoom3IAndII);
         createGroup(studentsIList2, angI_II, angTeacherI_II, "AngI2", classRoom3IAndII);
+        createGroup(studentsIList3, angI_II, angTeacherI_II, "AngI3", classRoom3IAndII);
+        createGroup(studentsIList4, angI_II, angTeacherI_II, "AngI4", classRoom3IAndII);
+        
+         createGroup(studentsIList1, bioI_II, bioTeacherI_II_IIIAB_IVAB, "BioI1", classRoom15IAndII);
+        createGroup(studentsIList2, bioI_II, bioTeacherI_II_IIIAB_IVAB, "BioI2", classRoom15IAndII);
+        createGroup(studentsIList3, bioI_II, bioTeacherI_II_IIIAB_IVAB, "BioI3", classRoom15IAndII);
+        createGroup(studentsIList4, bioI_II, bioTeacherI_II_IIIAB_IVAB, "BioI4", classRoom15IAndII);
+        
+         createGroup(studentsIList1, chemI_II, chemTeacherI_II_IIIAB_IVAB, "ChemI1", classRoom16IAndII);
+        createGroup(studentsIList2, chemI_II, chemTeacherI_II_IIIAB_IVAB, "ChemI2", classRoom16IAndII);
+        createGroup(studentsIList3, chemI_II, chemTeacherI_II_IIIAB_IVAB, "ChemI3", classRoom16IAndII);
+        createGroup(studentsIList4, chemI_II, chemTeacherI_II_IIIAB_IVAB, "ChemI4", classRoom16IAndII);
+        
+         createGroup(studentsIList1, istI_II, istTeacherI_II_IIIAB_IVAB, "IstI1", classRoom16IAndII);
+        createGroup(studentsIList2, istI_II, istTeacherI_II_IIIAB_IVAB, "IstI2", classRoom16IAndII);
+        createGroup(studentsIList3, istI_II, istTeacherI_II_IIIAB_IVAB, "IstI3", classRoom16IAndII);
+        createGroup(studentsIList4, istI_II, istTeacherI_II_IIIAB_IVAB, "IstI4", classRoom16IAndII);
+        
+         createGroup(studentsIList1, geoI_II, geoTeacherI_II_IIIAB_IVAB, "GeoI1", classRoom16IAndII);
+        createGroup(studentsIList2, geoI_II, geoTeacherI_II_IIIAB_IVAB, "GeoI1", classRoom16IAndII);
+        createGroup(studentsIList3, geoI_II, geoTeacherI_II_IIIAB_IVAB, "GeoI1", classRoom16IAndII);
+        createGroup(studentsIList4, geoI_II, geoTeacherI_II_IIIAB_IVAB, "GeoI1", classRoom16IAndII);
 
         List<Student> studentsIIList1 = createStudentsList("StudentII_", 1, 30, choosenDisciplinesI_II);
         List<Student> studentsIIList2 = createStudentsList("StudentII_", 31, 60, choosenDisciplinesI_II);
@@ -137,6 +186,7 @@ public class StudentsMockDataFiller {
         // 2 gymnasium groups
         createGroup(studentsIIList1, ltI_II, ltTeacherI_II, "LtII1", classRoom4IAndII);
         createGroup(studentsIIList2, ltI_II, ltTeacherI_II, "LtII2", classRoom4IAndII);
+        
 
         createGroup(studentsIIList1, mtI_II, mtTeacherI_II_IIIA_IVA, "MtII1", classRoom1IAndII);
         createGroup(studentsIIList2, mtI_II, mtTeacherI_II_IIIA_IVA, "MtII2", classRoom1IAndII);
@@ -146,7 +196,20 @@ public class StudentsMockDataFiller {
 
         createGroup(studentsIIList1, angI_II, angTeacherI_II, "AngII1", classRoom2IAndII);
         createGroup(studentsIIList2, angI_II, angTeacherI_II, "AngII2", classRoom3IAndII);
+        
+        createGroup(studentsIIList1, bioI_II, bioTeacherI_II_IIIAB_IVAB, "BioII1", classRoom15IAndII);
+        createGroup(studentsIIList2, bioI_II, bioTeacherI_II_IIIAB_IVAB, "BioII2", classRoom16IAndII);
 
+        createGroup(studentsIIList1, chemI_II, chemTeacherI_II_IIIAB_IVAB, "ChemII1", classRoom15IAndII);
+        createGroup(studentsIIList2, chemI_II, chemTeacherI_II_IIIAB_IVAB, "ChemII2", classRoom16IAndII);
+        
+        createGroup(studentsIIList1, istI_II, istTeacherI_II_IIIAB_IVAB, "IstII1", classRoom15IAndII);
+        createGroup(studentsIIList2, istI_II, istTeacherI_II_IIIAB_IVAB, "IstII2", classRoom16IAndII);
+        
+        createGroup(studentsIIList1, geoI_II, geoTeacherI_II_IIIAB_IVAB, "GeoII1", classRoom15IAndII);
+        createGroup(studentsIIList2, geoI_II, geoTeacherI_II_IIIAB_IVAB, "GeoII2", classRoom3IAndII);
+        
+        
         Discipline mtIIIA_IVA = createDiscipline("Matematika A", "6");
         Discipline ltIIIA_IVA = createDiscipline("Lietuviu kalba A", "6");
         Discipline fzIIIA_IVA = createDiscipline("Fizika A", "4");
@@ -155,7 +218,19 @@ public class StudentsMockDataFiller {
         Discipline ltIIIB_IVB = createDiscipline("Lietuviu kalba B", "4");
         Discipline fzIIIB_IVB = createDiscipline("Fizika B", "2");
         Discipline angIIIB_IVB = createDiscipline("Anglu kalba B", "3");
-
+        
+        
+        Discipline bioIIIB_IVB = createDiscipline("Biologija B", "2");
+        Discipline bioIIIA_IVA = createDiscipline("Biologija A", "3");
+        
+        Discipline istIIIB_IVB = createDiscipline("Istorija B", "2");
+        Discipline istIIIA_IVA = createDiscipline("Istorija A", "3");
+        
+        Discipline geoIIIA_IVA = createDiscipline("Geografija A", "2");
+        
+        Discipline chemIIIB_IVB = createDiscipline("Chemija B", "2");
+        Discipline chemIIIA_IVA = createDiscipline("Chemija A", "3");
+        
         List<Days> freeDaysForIIIAndIVTeacher = new ArrayList<>();
         freeDaysForIIIAndIVTeacher.add(Days.FRIDAY);
         Map<Days, String> freeHoursForIIIAndIVTeacher = new HashMap<>();
@@ -169,7 +244,7 @@ public class StudentsMockDataFiller {
         Teacher ltTeacherIIIB_IVB = createTeacher("TeacherIIIB&IVBLt", true, false, null, null, ltIIIB_IVB);
         Teacher fzTeacherIIIB_IVB = createTeacher("TeacherIIIB&IVBFz", true, false, null, freeHoursForIIIAndIVTeacher, fzIIIB_IVB);
         Teacher angTeacherIIIA_IVA_IIIB_IVB = createTeacher("TeacherIIIA&IVA&IIIB&IVBAng", true, false, null, freeHoursForIIIAndIVTeacher2, angIIIA_IVA, angIIIB_IVB);
-
+        
         // 3 gymnasium groups
         List<Discipline> choosenDisciplinesIII_IV_hum = new ArrayList<>();
         List<Discipline> choosenDisciplinesIII_IV_real = new ArrayList<>();
@@ -179,11 +254,18 @@ public class StudentsMockDataFiller {
         choosenDisciplinesIII_IV_hum.add(angIIIA_IVA);
         choosenDisciplinesIII_IV_hum.add(mtIIIB_IVB);
         choosenDisciplinesIII_IV_hum.add(fzIIIB_IVB);
+        choosenDisciplinesIII_IV_hum.add(geoIIIA_IVA);
+        choosenDisciplinesIII_IV_hum.add(istIIIA_IVA);
+        choosenDisciplinesIII_IV_hum.add(bioIIIB_IVB);
+        
 
         choosenDisciplinesIII_IV_real.add(ltIIIB_IVB);
         choosenDisciplinesIII_IV_real.add(angIIIB_IVB);
         choosenDisciplinesIII_IV_real.add(mtIIIA_IVA);
         choosenDisciplinesIII_IV_real.add(fzIIIA_IVA);
+        choosenDisciplinesIII_IV_real.add(chemIIIA_IVA);
+        choosenDisciplinesIII_IV_real.add(bioIIIA_IVA);
+        choosenDisciplinesIII_IV_real.add(istIIIB_IVB);
 
         List<Student> studentsIIIListReal1 = createStudentsList("StudentIII_real_", 1, 20, choosenDisciplinesIII_IV_real);
         List<Student> studentsIIIListReal2 = createStudentsList("StudentIII_real_", 21, 40, choosenDisciplinesIII_IV_real);
@@ -214,6 +296,24 @@ public class StudentsMockDataFiller {
         createGroup(studentsIIIListReal1, angIIIB_IVB, angTeacherIIIA_IVA_IIIB_IVB, "AngBIII1", classRoom9IIIAndIV);
         createGroup(studentsIIIListReal2, angIIIB_IVB, angTeacherIIIA_IVA_IIIB_IVB, "AngBIII2", classRoom9IIIAndIV);
 
+        createGroup(studentsIIIListReal1, chemIIIA_IVA, chemTeacherI_II_IIIAB_IVAB, "ChemAIII1", classRoom9IIIAndIV);
+        createGroup(studentsIIIListReal2, chemIIIA_IVA, chemTeacherI_II_IIIAB_IVAB, "ChemAIII2", classRoom9IIIAndIV);
+        
+        createGroup(studentsIIIListReal1, bioIIIA_IVA, bioTeacherI_II_IIIAB_IVAB, "BioAIII1", classRoom9IIIAndIV);
+        createGroup(studentsIIIListReal2, bioIIIA_IVA, bioTeacherI_II_IIIAB_IVAB, "BioAIII2", classRoom9IIIAndIV);
+        
+        createGroup(studentsIIIListReal1, istIIIB_IVB, istTeacherI_II_IIIAB_IVAB, "IstBIII1", classRoom8IIIAndIV);
+        createGroup(studentsIIIListReal2, istIIIB_IVB, istTeacherI_II_IIIAB_IVAB, "IstBIII2", classRoom8IIIAndIV);
+        
+        createGroup(studentsIIIListHum1, geoIIIA_IVA, geoTeacherI_II_IIIAB_IVAB, "GeoAIII1", classRoom9IIIAndIV);
+        createGroup(studentsIIIListHum2, geoIIIA_IVA, geoTeacherI_II_IIIAB_IVAB, "GeoAIII2", classRoom8IIIAndIV);
+        
+        createGroup(studentsIIIListHum1, istIIIA_IVA, istTeacherI_II_IIIAB_IVAB, "IstAIII1", classRoom9IIIAndIV);
+        createGroup(studentsIIIListHum2, istIIIA_IVA, istTeacherI_II_IIIAB_IVAB, "IstAIII2", classRoom8IIIAndIV);
+        
+        createGroup(studentsIIIListHum1, bioIIIB_IVB, bioTeacherI_II_IIIAB_IVAB, "BioBIII1", classRoom9IIIAndIV);
+        createGroup(studentsIIIListHum2, bioIIIB_IVB, bioTeacherI_II_IIIAB_IVAB, "BioBIII2", classRoom10IIIAndIV);
+        
         // 4 gymnasium groups
         List<Student> studentsIVListReal1 = createStudentsList("StudentIV_real_", 1, 20, choosenDisciplinesIII_IV_real);
         List<Student> studentsIVListReal2 = createStudentsList("StudentIV_real_", 21, 40, choosenDisciplinesIII_IV_real);
@@ -243,6 +343,25 @@ public class StudentsMockDataFiller {
 
         createGroup(studentsIVListReal1, angIIIB_IVB, angTeacherIIIA_IVA_IIIB_IVB, "AngBIV1", classRoom11IIIAndIV);
         createGroup(studentsIVListReal2, angIIIB_IVB, angTeacherIIIA_IVA_IIIB_IVB, "AngBIV2", classRoom11IIIAndIV);
+        
+        
+        createGroup(studentsIIIListReal1, chemIIIA_IVA, chemTeacherI_II_IIIAB_IVAB, "ChemAIV1", classRoom11IIIAndIV);
+        createGroup(studentsIIIListReal2, chemIIIA_IVA, chemTeacherI_II_IIIAB_IVAB, "ChemAIV2", classRoom11IIIAndIV);
+        
+        createGroup(studentsIIIListReal1, bioIIIA_IVA, bioTeacherI_II_IIIAB_IVAB, "BioAIV1", classRoom11IIIAndIV);
+        createGroup(studentsIIIListReal2, bioIIIA_IVA, bioTeacherI_II_IIIAB_IVAB, "BioAIV2", classRoom11IIIAndIV);
+        
+        createGroup(studentsIIIListReal1, istIIIB_IVB, istTeacherI_II_IIIAB_IVAB, "IstBIV1", classRoom7IIIAndIV);
+        createGroup(studentsIIIListReal2, istIIIB_IVB, istTeacherI_II_IIIAB_IVAB, "IstBIV2", classRoom7IIIAndIV);
+        
+        createGroup(studentsIIIListHum1, geoIIIA_IVA, geoTeacherI_II_IIIAB_IVAB, "GeoAIV1", classRoom7IIIAndIV);
+        createGroup(studentsIIIListHum2, geoIIIA_IVA, geoTeacherI_II_IIIAB_IVAB, "GeoAIV2", classRoom7IIIAndIV);
+        
+        createGroup(studentsIIIListHum1, istIIIA_IVA, istTeacherI_II_IIIAB_IVAB, "IstAIII1", classRoom8IIIAndIV);
+        createGroup(studentsIIIListHum2, istIIIA_IVA, istTeacherI_II_IIIAB_IVAB, "IstAIII2", classRoom8IIIAndIV);
+        
+        createGroup(studentsIIIListHum1, bioIIIB_IVB, bioTeacherI_II_IIIAB_IVAB, "BioBIV1", classRoom8IIIAndIV);
+        createGroup(studentsIIIListHum2, bioIIIB_IVB, bioTeacherI_II_IIIAB_IVAB, "BioBIV2", classRoom8IIIAndIV);
 
     }
 
