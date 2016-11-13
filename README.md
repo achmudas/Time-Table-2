@@ -1,4 +1,4 @@
 Time-Table-2
 ============
 
-This is project for Lithuania school time table
+This is project for Lithuania school time table creator
